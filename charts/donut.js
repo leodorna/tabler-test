@@ -4,7 +4,7 @@ function newDonut(div) {
             id: "my-donut",
             type: "donut",
             fontFamily: 'inherit',
-            height: '100%',
+            height: '400',
             sparkline: {
                 enabled: true
             },

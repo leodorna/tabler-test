@@ -41,60 +41,51 @@
             <div class="page-body">
                 <div class="container-xl">
                     <div class="row row-deck row-cards">
-                        <div id="app" class="col-md-8">
-                            <div class="card">
-                                <div class="card-header align-bottom">
-                                    <h1>Tabela</h1>
+                        <div class="col-md-8">
+                            <div class="row row-deck row-cards">
+                                <div id="app" class="col-12">
+                                    <div class="card">
+                                        <div class="card-header align-bottom">
+                                            <h1>Tabela</h1>
+                                        </div>
+                                        <div class="card-body">
+                                            <tabela v-bind:items="list"></tabela>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <tabela v-bind:items="list"></tabela>
+                            </div>    
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row row-deck row-cards">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header align-bottom">
+                                            <h1>Donut</h1>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chart-demo-pie" class="chart-lg"></div>
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div id="eyes-info" class="card-body row align-items-baseline">
+                                            <div v-for="prob in probs" class="col text-center">
+                                                <div class="h1">{{prob.value}}%</div>
+                                                <div class="text-muted">{{prob.label}}</div>
+                                            </div>                                            
+                                        </div>
+                                        <div class="card-footer">
+                                            <span class="text-muted">A probabilidade do fenótipo é calculada utilizando técnicas de inteligência artificial</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-header align-bottom">
-                                    <h1>Donut</h1>
-                                </div>
-                                <div class="card-body">
-                                <div id="chart-demo-pie" class="chart-lg"></div>
-                                </div>
-                            </div>
-                        </div>  
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body row align-items-baseline">
-                                    <div class="col text-center">
-                                        <div class="h1">92%</div>
-                                        <div class="text-muted">Olhos azuis</div>
-                                    </div>
-                                    <div class="col text-center">
-                                        <div class="h2">7%</div>
-                                        <div class="text-muted">Olhos castanhos</div>
-                                    </div>
-
-                                    <div class="col text-center">
-                                        <div class="h3">1%</div>
-                                        <div class="text-muted">Olhos pretos</div>
-                                    </div>
-                                    
-                                </div>
-                                <div class="card-footer">
-                                    <span class="text-muted">A probabilidade do fenótipo é calculada utilizando técnicas de inteligência artificial</span>
-                                </div>
-                            </div>
-                            
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body">
-
-                                </div>
-                            </div>
-                        </div>  
-                    
+                        
+    
                     </div>
-                    
+
 
                 </div>
             </div>
@@ -164,8 +155,18 @@
         }
     })
 
-    const donut = new Vue({
-        el: ''
+    const eyes_info = new Vue({
+        el: '#eyes-info',
+        data: {
+            probs: []
+        },
+        created(){
+            fetch('http://localhost:8000/api/v1/samples/donut')
+            .then(response => response.json())
+            .then(json => {
+                this.probs = json
+            })
+        }
     })
 
 </script>
