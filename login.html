@@ -1,0 +1,94 @@
+<link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/css/tabler.min.css">
+<link rel="stylesheet" href="login.css">
+
+<body>
+    <div id="container" class ="container">
+        <div class="row align-items-center justify-content-around h-100">  
+            <div class="col-md-4">
+                <form action="" method="post">
+                    <div class="card">
+                        <div class="card-header">  
+                            <h3 class="card-title">Login</h3>            
+                        </div>
+                        <div class="card-body">
+                            <div class="input-icon mb-3">
+                                <span class="input-icon-addon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-at" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <circle cx="12" cy="12" r="4"></circle>
+                                        <path d="M16 12v1.5a2.5 2.5 0 0 0 5 0v-1.5a9 9 0 1 0 -5.5 8.28"></path>
+                                        </svg>
+                                </span>
+                                <input type="text" name="email" class="form-control" placeholder="E-mail">
+                            </div>
+                            <div class="input-icon mb-3">
+                                <span class="input-icon-addon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                                        <circle cx="12" cy="16" r="1"></circle>
+                                        <path d="M8 11v-4a4 4 0 0 1 8 0v4"></path>
+                                    </svg>
+                                </span>
+                                <input type="password" name="password" class="form-control" placeholder="Senha">
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <a href="#">Esqueceu sua senha?</a>
+                                </div>
+                            </div>
+                        </div>    
+                        <div class="card-footer text-end">
+                            <div class="d-flex">
+                                <button class="btn btn-primary ms-auto" type="submit">
+                                    Login
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-4">
+                <img src="logo.svg">
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    /*function submit_form(){
+        JSON.stringify()
+    }*/
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        const data = new FormData(event.target);
+        const dataToSend = Object.fromEntries(data.entries());
+
+        postData('http://localhost:8000/api/v1/login/access-token', dataToSend)
+        .then( data => {
+                console.log(data);
+            }
+        )
+    }
+
+    async function postData(url = '', data = {}) {
+        // Default options are marked with *
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            //credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            // when 'follow' is set, fetch() API follows the redirect response (HTTP status code = 301,302,303,307,308)
+            redirect: 'follow', // manual, *follow, error
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        });
+        return response.json(); // parses JSON response into native JavaScript objects
+    }
+
+    const form = document.querySelector('form');
+    form.addEventListener('submit', handleSubmit);
+</script>
