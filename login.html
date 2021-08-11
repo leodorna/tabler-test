@@ -122,6 +122,8 @@
 
     const session = new Session('https://sbcb.inf.ufrgs.br/forense/api/v1/');
 
+    console.log(window.location.hostname)
+
     session.collectToken()
         .then( userData => {
             if(window.location.hostname == ""){
