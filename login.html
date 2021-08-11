@@ -81,7 +81,7 @@
             if(window.location.hostname == ""){
                 redirectUser('file:///home/leo/repo/tabler-test/index.html');
             } else {
-                redirectUser('')
+                redirectUser('index.html')
             }
             
         }
@@ -128,7 +128,7 @@
                 session.redirect('file:///home/leo/repo/tabler-test/index.html')
             }
             else{
-                session.redirect('')
+                session.redirect('index.html')
             }
         })
         .catch( async (error) => {
