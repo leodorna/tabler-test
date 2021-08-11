@@ -79,9 +79,9 @@
             const data = await response.json();        
             localStorage.setItem('token', JSON.stringify(data));
             if(window.location.hostname == ""){
-                redirectUser('file:///home/leo/repo/tabler-test/home.html');
+                redirectUser('file:///home/leo/repo/tabler-test/index.html');
             } else {
-                redirectUser('home.html')
+                redirectUser('')
             }
             
         }
@@ -125,10 +125,10 @@
     session.collectToken()
         .then( userData => {
             if(window.location.hostname == ""){
-                session.redirect('file:///home/leo/repo/tabler-test/home.html')
+                session.redirect('file:///home/leo/repo/tabler-test/index.html')
             }
             else{
-                session.redirect('home.html')
+                session.redirect('')
             }
         })
         .catch( async (error) => {

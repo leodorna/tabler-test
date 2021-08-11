@@ -1,0 +1,197 @@
+<link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/css/tabler.min.css">
+
+<body class="antialiased">
+    <div class="wrapper">
+        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <div id="navbar-menu" class="collapse navbar-collapse">
+                    <ul class="navbar-nav pt-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://www.google.com">
+                                <span class="nav-link-title">Página Inicial</span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+                              <span class="nav-link-title">
+                                Informações Fenotípicas
+                              </span>
+                            </a>
+                            <div class="dropdown-menu">
+                              <div class="dropdown-menu-columns">
+                                <div class="dropdown-menu-column">
+                                  <a class="dropdown-item" href="#">
+                                    Cabelo
+                                  </a>
+                                  <a class="dropdown-item" href="#">
+                                    Olho
+                                  </a>
+                                  <a class="dropdown-item" href="#">
+                                    Pele
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="row row-deck row-cards">
+                        <div class="col-md-8">
+                            <div class="row row-deck row-cards">
+                                <div id="app" class="col-12">
+                                    <div class="card">
+                                        <div class="card-header align-bottom">
+                                            <h1>Tabela</h1>
+                                        </div>
+                                        <div class="card-body">
+                                            <tabela v-bind:items="list"></tabela>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row row-deck row-cards">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header align-bottom">
+                                            <h1>Donut</h1>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chart-demo-pie" class="chart-lg"></div>
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div id="eyes-info" class="card-body row align-items-baseline">
+                                            <div v-for="prob in probs" class="col text-center">
+                                                <div class="h1">{{prob.value}}%</div>
+                                                <div class="text-muted">{{prob.label}}</div>
+                                            </div>                                            
+                                        </div>
+                                        <div class="card-footer">
+                                            <span class="text-muted">A probabilidade do fenótipo é calculada utilizando técnicas de inteligência artificial</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+    
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+       
+</body>
+
+  
+
+<script src="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/js/tabler.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+<script type="text/x-template" id="tabela-template">
+    <div class="col-md">
+        <div class="table-responsive">
+        <table class="table table-vcenter">
+            <thead>
+                <tr>
+                    <th>Gene</th>
+                    <th>SNP</th>
+                    <th>Alelo Observado</th>
+                    <th>Alelo Referência 1000 Genome Global</th>
+                    <th>Alelo Alternativo 1000 Genome Global</th>
+                    <th>Alelo Referência População Brasileira</th>
+                    <th>Alelo Alterativo População Brasileira</th>
+                    <th>Significado Clínico</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in items">
+                    <td>{{ item.gene }}</td>
+                    <td>{{ item.snp }}</td>
+                    <td>{{ item.alelo_obsv }}</td>
+                    <td>{{ item.alelo_ref_gen }}</td>
+                    <td>{{ item.alelo_alt_gen }}</td>
+                    <td>{{ item.alelo_ref_pop }}</td>
+                    <td>{{ item.alelo_alt_pop }}</td>
+                    <td>{{ item.significado_clinico }}</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</script>
+
+<script src="./vue_components_js/tabela.js"></script>
+<script src="./charts/donut.js"></script>
+
+<script>
+    
+    const app = new Vue({
+        el: '#app',
+        data: {
+            list: []
+        },
+        created() {
+            fetch('http://localhost:8000/api/v1/samples/')
+            .then(response => response.json())
+            .then(json => {
+                this.list = json
+            })
+        }
+    })
+
+    const eyes_info = new Vue({
+        el: '#eyes-info',
+        data: {
+            probs: []
+        },
+        created(){
+            fetch('http://localhost:8000/api/v1/samples/donut')
+            .then(response => response.json())
+            .then(json => {
+                this.probs = json
+            })
+        }
+    })
+
+</script>
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function(){
+        newDonut('chart-demo-pie');
+        
+        fetch('http://localhost:8000/api/v1/samples/donut')
+            .then(response => response.json())
+            .then(json => {
+               updateDonut('my-donut', json);
+            })
+
+        
+    })
+
+    
+
+    function randomArray(length, max) {
+       return Array.apply(null, Array(length)).map(function() {
+            return Math.round(Math.random() * max);
+        });
+    }
+
+</script>

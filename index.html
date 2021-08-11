@@ -1,197 +1,224 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
 <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/css/tabler.min.css">
 
-<body class="antialiased">
-    <div class="wrapper">
-        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
-            <div class="container-fluid">
-                <div id="navbar-menu" class="collapse navbar-collapse">
-                    <ul class="navbar-nav pt-lg-3">
-                        <li class="nav-item">
-                            <a class="nav-link" href="https://www.google.com">
-                                <span class="nav-link-title">Página Inicial</span>
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" role="button" aria-expanded="false">
-                              <span class="nav-link-title">
-                                Informações Fenotípicas
-                              </span>
-                            </a>
-                            <div class="dropdown-menu">
-                              <div class="dropdown-menu-columns">
-                                <div class="dropdown-menu-column">
-                                  <a class="dropdown-item" href="#">
-                                    Cabelo
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                    Olho
-                                  </a>
-                                  <a class="dropdown-item" href="#">
-                                    Pele
-                                  </a>
+<style>
+    body{
+        height: 100%;
+    }
+
+</style>
+
+<html>
+    <body class="antialiased">
+        <div id="app" class="wrapper">
+            <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+                <div class="container-fluid">
+                    <nav-bar  v-bind:user="user" v-bind:views="views"></nav-bar>
+                    <!-- <div id="navbar-menu" class="collapse navbar-collapse">
+                        <ul class="navbar-nav pt-lg-3 d-flex">
+                            <li class="nav-item">
+                                <div class="nav-link disabled">
+                                    <span class="title"><h3>{{user.name}}</h3></span>
+                                    
                                 </div>
-                              </div>
-                            </div>
-                        </li>
-                    </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="https://www.google.com">
+                                    <span class="nav-link-title">Página Inicial</span>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+                                  <span class="nav-link-title">
+                                    Informações Fenotípicas
+                                  </span>
+                                </a>
+                                <div class="dropdown-menu">
+                                  <div class="dropdown-menu-columns">
+                                    <div class="dropdown-menu-column">
+                                      <a class="dropdown-item" href="#" v-on:click="setView(1)">
+                                        Cabelo
+                                      </a>
+                                      <a class="dropdown-item" href="#" v-on:click="setView(2)">
+                                        Olho
+                                      </a>
+                                      <a class="dropdown-item" href="#" v-on:click="setView(3)">
+                                        Pele
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                            </li>
+                            <li class="nav-item mt-auto">
+                                <a href="#" class="nav-link" onclick="session.logout()">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
+                                            <path d="M7 12h14l-3 -3m0 6l3 -3"></path>
+                                         </svg>
+                                    </span>
+                                    
+                                    <span class="nav-link-title text-white"><strong>Log out</strong></span>
+                                </a>
+                                
+                            </li>
+                        </ul>
+                    </div> -->
                 </div>
-            </div>
-        </aside>
-        <div class="page-wrapper">
-            <div class="page-body">
-                <div class="container-xl">
-                    <div class="row row-deck row-cards">
-                        <div class="col-md-8">
-                            <div class="row row-deck row-cards">
-                                <div id="app" class="col-12">
-                                    <div class="card">
-                                        <div class="card-header align-bottom">
-                                            <h1>Tabela</h1>
-                                        </div>
-                                        <div class="card-body">
-                                            <tabela v-bind:items="list"></tabela>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>    
-                        </div>
-                        <div class="col-md-4">
-                            <div class="row row-deck row-cards">
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-header align-bottom">
-                                            <h1>Donut</h1>
-                                        </div>
-                                        <div class="card-body">
-                                            <div id="chart-demo-pie" class="chart-lg"></div>
-                                        </div>
-                                    </div>
-                                </div>  
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div id="eyes-info" class="card-body row align-items-baseline">
-                                            <div v-for="prob in probs" class="col text-center">
-                                                <div class="h1">{{prob.value}}%</div>
-                                                <div class="text-muted">{{prob.label}}</div>
-                                            </div>                                            
-                                        </div>
-                                        <div class="card-footer">
-                                            <span class="text-muted">A probabilidade do fenótipo é calculada utilizando técnicas de inteligência artificial</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-    
+            </aside>
+            <div class="page-wrapper">
+                <div class="page-body">
+                    <div class="d-flex h-100 justify-content-center align-items-center">
+                        <page-content v-if="currentView == 1" v-bind:user="user" ></page-content>
                     </div>
-
-
                 </div>
             </div>
         </div>
-    </div>
-    
-       
-</body>
+    </body>
+        
+</html>
 
-  
-
+<!-- Tabler, Vue and ApexCharts -->
 <script src="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/js/tabler.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<!-- Javascript Classes -->
+<script src="classes/Token.js"></script>
+<script src="classes/Session.js"></script>
+
+<!-- Vue Components -->
+<script src="vue_components_js/navbar.js"></script>
+<script src="vue_components_js/tabela.js"></script>
+
+<!-- Charts -->
+<script src="./charts/donut.js"></script>
+
+<script>
+
+    let homeTemplate;
+    let navTemplate;
+
+    const session = new Session('https://sbcb.inf.ufrgs.br/forense/api/v1/');
+
+    home = Vue.component("page-content", {
+        props : ['view', 'user', 'idView'],
+        template: "#page-content"
+    })
 
 
-<script type="text/x-template" id="tabela-template">
-    <div class="col-md">
-        <div class="table-responsive">
-        <table class="table table-vcenter">
-            <thead>
-                <tr>
-                    <th>Gene</th>
-                    <th>SNP</th>
-                    <th>Alelo Observado</th>
-                    <th>Alelo Referência 1000 Genome Global</th>
-                    <th>Alelo Alternativo 1000 Genome Global</th>
-                    <th>Alelo Referência População Brasileira</th>
-                    <th>Alelo Alterativo População Brasileira</th>
-                    <th>Significado Clínico</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="item in items">
-                    <td>{{ item.gene }}</td>
-                    <td>{{ item.snp }}</td>
-                    <td>{{ item.alelo_obsv }}</td>
-                    <td>{{ item.alelo_ref_gen }}</td>
-                    <td>{{ item.alelo_alt_gen }}</td>
-                    <td>{{ item.alelo_ref_pop }}</td>
-                    <td>{{ item.alelo_alt_pop }}</td>
-                    <td>{{ item.significado_clinico }}</td>
-                </tr>
-            </tbody>
-        </table>
+    session.collectToken()
+        .then( userData => {
+            Vue.prototype.$user = userData
+
+            appTemplate = new Vue({
+                el: "#app",
+                data: {
+                    views: 0,
+                    user: userData,
+                    currentView: 0,
+                },
+                methods: {
+                    setView: function(id){
+                        this.currentView = id;
+                    }
+                },
+                created(){
+                    this.view = 0;
+                    this.user = userData
+
+                    
+                }
+            })
+/*
+            session.getRequest('views/1/user/100').then( data => {
+                data.json().then( d => console.log(d) )
+            })*/
+            
+
+        })
+        .catch( error => {
+            if(window.location.hostname == ""){
+                session.redirect('file:///home/leo/repo/tabler-test/login.html')
+            }
+            else{
+                session.redirect('login.html')
+            }
+        })
+
+
+</script>
+
+<script type="text/x-template" id="donut-template">
+    <div class="card">
+        <div class="card-header align-bottom">
+            <h1>Donut</h1>
+        </div>
+        <div class="card-body">
+            <div id="chart-demo-pie" class="chart-lg"></div>
         </div>
     </div>
 </script>
 
-<script src="./vue_components_js/tabela.js"></script>
-<script src="./charts/donut.js"></script>
-
-<script>
-    
-    const app = new Vue({
-        el: '#app',
-        data: {
-            list: []
-        },
-        created() {
-            fetch('http://localhost:8000/api/v1/samples/')
-            .then(response => response.json())
-            .then(json => {
-                this.list = json
-            })
-        }
-    })
-
-    const eyes_info = new Vue({
-        el: '#eyes-info',
-        data: {
-            probs: []
-        },
-        created(){
-            fetch('http://localhost:8000/api/v1/samples/donut')
-            .then(response => response.json())
-            .then(json => {
-                this.probs = json
-            })
-        }
-    })
-
+<script type="text/x-template" id="page-content">
+    <h1>
+        Bem-vindo Sr. {{user.name}}!
+    </h1>
 </script>
 
-
-<script>
-
-    document.addEventListener("DOMContentLoaded", function(){
-        newDonut('chart-demo-pie');
-        
-        fetch('http://localhost:8000/api/v1/samples/donut')
-            .then(response => response.json())
-            .then(json => {
-               updateDonut('my-donut', json);
-            })
-
-        
-    })
-
-    
-
-    function randomArray(length, max) {
-       return Array.apply(null, Array(length)).map(function() {
-            return Math.round(Math.random() * max);
-        });
-    }
-
+<script type="text/x-template" id="navbar-menu">
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav pt-lg-3 d-flex">
+            <li class="nav-item">
+                <div class="nav-link disabled">
+                    <span class="title"><h3>{{user.name}}</h3></span>
+                    
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.google.com">
+                    <span class="nav-link-title">Página Inicial</span>
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+                  <span class="nav-link-title">
+                    Informações Fenotípicas
+                  </span>
+                </a>
+                <div class="dropdown-menu">
+                  <div class="dropdown-menu-columns">
+                    <div class="dropdown-menu-column">
+                      <a class="dropdown-item" href="#" v-on:click="setView(1)">
+                        Cabelo
+                      </a>
+                      <a class="dropdown-item" href="#" v-on:click="setView(2)">
+                        Olho
+                      </a>
+                      <a class="dropdown-item" href="#" v-on:click="setView(3)">
+                        Pele
+                      </a>
+                    </div>
+                  </div>
+                </div>
+            </li>
+            <li class="nav-item mt-auto">
+                <a href="#" class="nav-link" onclick="session.logout()">
+                    <span class="nav-link-icon d-md-none d-lg-inline-block text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
+                            <path d="M7 12h14l-3 -3m0 6l3 -3"></path>
+                         </svg>
+                    </span>
+                    
+                    <span class="nav-link-title text-white"><strong>Log out</strong></span>
+                </a>
+                
+            </li>
+        </ul>
+    </div>
 </script>
