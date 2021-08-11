@@ -104,7 +104,6 @@
 
     const session = new Session('https://sbcb.inf.ufrgs.br/forense/api/v1/');
 
-
     home = Vue.component("page-content", {
         props : ['view', 'user', 'idView'],
         template: "#page-content"
@@ -113,7 +112,6 @@
 
     session.collectToken()
         .then( userData => {
-            
             Vue.prototype.$user = userData
 
             appTemplate = new Vue({
@@ -135,16 +133,20 @@
                     
                 }
             })
-
+/*
             session.getRequest('views/1/user/100').then( data => {
                 data.json().then( d => console.log(d) )
-            })
+            })*/
             
 
         })
         .catch( error => {
-            
-            session.redirect('file:///home/leo/repo/tabler-test/login.html')
+            if(window.location.hostname == ""){
+                session.redirect('file:///home/leo/repo/tabler-test/login.html')
+            }
+            else{
+                session.redirect(window.location.hostname + 'login.html')
+            }
         })
 
 
