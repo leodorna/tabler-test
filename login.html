@@ -81,7 +81,7 @@
             if(window.location.hostname == ""){
                 redirectUser('file:///home/leo/repo/tabler-test/home.html');
             } else {
-                redirectUser(window.location.hostname + 'home.html')
+                redirectUser(window.location.hostname + '/home.html')
             }
             
         }
@@ -121,16 +121,14 @@
     form.addEventListener('submit', handleSubmit);
 
     const session = new Session('https://sbcb.inf.ufrgs.br/forense/api/v1/');
-
-    console.log(window.location.hostname)
-
+    
     session.collectToken()
         .then( userData => {
             if(window.location.hostname == ""){
                 session.redirect('file:///home/leo/repo/tabler-test/home.html')
             }
             else{
-                session.redirect(window.location.hostname + 'home.html')
+                session.redirect(window.location.hostname + '/home.html')
             }
         })
         .catch( async (error) => {
