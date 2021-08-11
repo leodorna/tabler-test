@@ -4,7 +4,7 @@ class Session{
         this.baseUrl = baseUrl
     }
 
-    redirect(absolutePath){; 
+    redirect(absolutePath){
         window.location.href = absolutePath;
     }
 
@@ -70,6 +70,6 @@ class Session{
 
      logout(){
         localStorage.removeItem('token')
-        this.redirect('file:///home/leo/repo/tabler-test/login.html')
+        this.redirect('login.html')
     }
 }
