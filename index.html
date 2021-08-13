@@ -67,7 +67,8 @@
         template: "#page-content"
     })
 
-                    
+    let donut = null;
+
     session.collectToken()
         .then( userData => {
             Vue.prototype.$user = userData
@@ -86,7 +87,9 @@
                         this.currentView = id;
                         const resp = await session.getRequest('views/'+id+'/complete')
 
-                        newDonut('chart-demo-pie');
+                        if(donut == null)
+                            newDonut('chart-demo-pie');
+
                         resp.json()
                             .then( d => {
                                 this.view_1 = { 

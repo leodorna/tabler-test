@@ -49,6 +49,8 @@ function newDonut(div) {
             fillSeriesColor: false
         },
     }).render();
+
+    return donut
 }
 
 function updateDonut(id, data){
