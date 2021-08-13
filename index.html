@@ -16,63 +16,20 @@
             <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
                 <div class="container-fluid">
                     <nav-bar  v-bind:user="user" v-bind:views="views"></nav-bar>
-                    <!-- <div id="navbar-menu" class="collapse navbar-collapse">
-                        <ul class="navbar-nav pt-lg-3 d-flex">
-                            <li class="nav-item">
-                                <div class="nav-link disabled">
-                                    <span class="title"><h3>{{user.name}}</h3></span>
-                                    
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="https://www.google.com">
-                                    <span class="nav-link-title">Página Inicial</span>
-                                </a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" role="button" aria-expanded="false">
-                                  <span class="nav-link-title">
-                                    Informações Fenotípicas
-                                  </span>
-                                </a>
-                                <div class="dropdown-menu">
-                                  <div class="dropdown-menu-columns">
-                                    <div class="dropdown-menu-column">
-                                      <a class="dropdown-item" href="#" v-on:click="setView(1)">
-                                        Cabelo
-                                      </a>
-                                      <a class="dropdown-item" href="#" v-on:click="setView(2)">
-                                        Olho
-                                      </a>
-                                      <a class="dropdown-item" href="#" v-on:click="setView(3)">
-                                        Pele
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                            </li>
-                            <li class="nav-item mt-auto">
-                                <a href="#" class="nav-link" onclick="session.logout()">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block text-white">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
-                                            <path d="M7 12h14l-3 -3m0 6l3 -3"></path>
-                                         </svg>
-                                    </span>
-                                    
-                                    <span class="nav-link-title text-white"><strong>Log out</strong></span>
-                                </a>
-                                
-                            </li>
-                        </ul>
-                    </div> -->
                 </div>
             </aside>
             <div class="page-wrapper">
                 <div class="page-body">
                     <div class="d-flex h-100 justify-content-center align-items-center">
-                        <page-content v-if="currentView == 1" v-bind:user="user" ></page-content>
+                        <div class="row row-deck row-cards w-100" v-if="currentView == 1">
+                            <div class="col-md-6">
+                                <tabela v-bind:snps="view_1.snps"></tabela>
+                            </div>
+                            <div class="col-md-6">
+                                <donut v-bind:user="user" v-bind:description="view_1.description"></donut>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -93,6 +50,7 @@
 <!-- Vue Components -->
 <script src="vue_components_js/navbar.js"></script>
 <script src="vue_components_js/tabela.js"></script>
+<script src="vue_components_js/donut.js"></script>
 
 <!-- Charts -->
 <script src="./charts/donut.js"></script>
@@ -109,35 +67,52 @@
         template: "#page-content"
     })
 
-
+                    
     session.collectToken()
         .then( userData => {
             Vue.prototype.$user = userData
 
+
             appTemplate = new Vue({
                 el: "#app",
                 data: {
-                    views: 0,
+                    views: [],
                     user: userData,
                     currentView: 0,
+                    view_1: []
                 },
                 methods: {
-                    setView: function(id){
+                    setView: async function(id){
                         this.currentView = id;
+                        const resp = await session.getRequest('views/'+id+'/complete')
+
+                        newDonut('chart-demo-pie');
+                        resp.json()
+                            .then( d => {
+                                this.view_1 = { 
+                                        "snps": d.snps.map(d => {
+                                            d['url'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;
+                                            return d;
+                                        }), 
+                                        "description": d.description
+                                    };
+
+                                updateDonut('my-donut', d.prediction);
+                            })
                     }
                 },
-                created(){
+                async created(){
                     this.view = 0;
                     this.user = userData
 
+                    const viewsResponse = await session.getRequest('views/')
                     
+                    viewsResponse.json()
+                        .then( d => {
+                            this.views = d.data
+                        })
                 }
             })
-/*
-            session.getRequest('views/1/user/100').then( data => {
-                data.json().then( d => console.log(d) )
-            })*/
-            
 
         })
         .catch( error => {
@@ -192,15 +167,9 @@
                 <div class="dropdown-menu">
                   <div class="dropdown-menu-columns">
                     <div class="dropdown-menu-column">
-                      <a class="dropdown-item" href="#" v-on:click="setView(1)">
-                        Cabelo
-                      </a>
-                      <a class="dropdown-item" href="#" v-on:click="setView(2)">
-                        Olho
-                      </a>
-                      <a class="dropdown-item" href="#" v-on:click="setView(3)">
-                        Pele
-                      </a>
+                        <a class="dropdown-item" v-for="v in views" v-on:click="setView(v.id)">
+                            {{v.title}}
+                        </a>
                     </div>
                   </div>
                 </div>
@@ -220,5 +189,51 @@
                 
             </li>
         </ul>
+    </div>
+</script>
+
+<script type="text/x-template" id="donut-template">
+    <div class="card">
+        <div class="card-header align-bottom">
+            <h1>Donut</h1>
+        </div>
+        <div class="card-body">
+            <div id="chart-demo-pie" class="chart-lg"></div>
+        </div>
+        <div class="card-footer">
+            testee
+        </div>
+        
+    </div>
+</script>
+
+
+<script type="text/x-template" id="tabela-template">
+    <div class="card">
+        <div class="card-header align-bottom">
+            <h1>Tabela</h1>
+        </div>
+        <div class="card-body">
+            <div class="col-md">
+                <div class="table-responsive">
+                    <table class="table table-vcenter">
+                        <thead>
+                            <tr>
+                                <th>SNP</th>
+                                <th>Gene</th>
+                                <th>Alelo Observado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="snp in snps">
+                                <td>{{ snp.snp }}</td>
+                                <td><a :href="snp.url">{{ snp.gene }}</a></td>
+                                <td>{{ snp.genotype }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </script>

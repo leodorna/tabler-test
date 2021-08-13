@@ -30,7 +30,7 @@ function newDonut(div) {
         grid: {
             strokeDashArray: 4,
         },
-        colors: ["#206bc4", "#79a6dc", "#d2e1f3", "#e9ecf1"],
+        colors: ["#206bc4", "#79a6dc", "#d2e1f3", "#e9ecf1", "#3889A6", "#83D5F2" ],
         legend: {
             show: true,
             position: 'bottom',
@@ -52,6 +52,8 @@ function newDonut(div) {
 }
 
 function updateDonut(id, data){
+
+    console.log(id, getLabelsDonut(data))
     ApexCharts.exec(id, 'updateSeries', 
         getSeriesDonut(data)
     , true)
@@ -65,10 +67,19 @@ function updateDonut(id, data){
 }
 
 function getSeriesDonut(data){
-    return data.map(item =>  item.value)
+    //return data.map(item =>  item.value)
+    return Object.values(data).filter( d => {
+        if(d > 0) return d
+    })
 }
 
 function getLabelsDonut(data){
-    return data.map(item => item.label)
+    //return data.map(item => item.label)
+    console.log(Object.entries(data))
+    return Object.entries(data).filter( d => {
+        if(d[1] > 0 ) return d
+    }).map( d => {
+        return d[0]
+    })
 }
 

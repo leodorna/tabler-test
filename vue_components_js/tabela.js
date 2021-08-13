@@ -1,4 +1,4 @@
 Vue.component("tabela", {
-    props: ["items"],
+    props: ["snps"],
     template: "#tabela-template"
 })

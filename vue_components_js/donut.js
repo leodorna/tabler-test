@@ -1,4 +1,4 @@
 nav = Vue.component("donut", {
-    props : ['user', 'data'],
+    props : ['user','description'],
     template : "#donut-template"
 })
