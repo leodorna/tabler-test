@@ -87,14 +87,15 @@
                         this.currentView = id;
                         const resp = await session.getRequest('views/'+id+'/complete')
 
-                        if(donut == null)
-                            newDonut('chart-demo-pie');
+                        newDonut('chart-demo-pie');
 
                         resp.json()
                             .then( d => {
+
                                 this.view_1 = { 
                                         "snps": d.snps.map(d => {
-                                            d['url'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;
+                                            d['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;
+                                            d['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+d.snp;
                                             return d;
                                         }), 
                                         "description": d.description
@@ -229,8 +230,8 @@
                         </thead>
                         <tbody>
                             <tr v-for="snp in snps">
-                                <td>{{ snp.snp }}</td>
-                                <td><a :href="snp.url">{{ snp.gene }}</a></td>
+                                <td><a :href="snp.url_snp">{{ snp.snp }}</a></td>
+                                <td><a :href="snp.url_gene">{{ snp.gene }}</a></td>
                                 <td>{{ snp.genotype }}</td>
                             </tr>
                         </tbody>
