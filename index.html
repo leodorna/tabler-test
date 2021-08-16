@@ -32,9 +32,11 @@
                                             <h1>Donut</h1>
                                         </div>
                                         <div class="card-body">
-                                            <keep-alive>
-                                                <donut v-bind:user="user" v-bind:id="1" v-bind:data="view_1.prediction"></donut>
-                                            
+                                            <donut v-bind:user="user" v-bind:id="1" v-bind:data="view_1.prediction"></donut>
+                                        </div>
+
+                                        <div class="card-footer">
+                                            {{getDescription(1)}}
                                         </div>
                                     </div>
                                 </div>
@@ -53,6 +55,9 @@
                                         </div>
                                         <div class="card-body">
                                             <donut v-bind:user="user" v-bind:id="2" v-bind:data="view_2.prediction"></donut>
+                                        </div>
+                                        <div class="card-footer">
+                                            {{getDescription(2)}}
                                         </div>
                                     </div>
                                 </div>
@@ -114,8 +119,14 @@
                 },
                 methods: {
                     setView: async function(id){
-                        this.currentView = id;                        
+                        this.currentView = id;                  
+                    },
+                    getDescription: function(id){
+                        return this.views.filter( d => {
+                            if(d.id == id) return d
+                        })[0].description
                     }
+
                 },
                 async created(){
                     this.view = 0;
