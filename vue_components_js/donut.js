@@ -16,9 +16,10 @@ Vue.component("donut", {
         const data = await resp.json();
         if(this.donut == null){
             this.donut = newDonut(this.$data.idDiv, this.$data.idDonut)
-            this.donut.render()
 
         }
+
+        this.donut.render()
         
         updateDonut(this.$data.idDonut, data.prediction)
 

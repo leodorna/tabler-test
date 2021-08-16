@@ -117,45 +117,6 @@
                         this.currentView = id;
                         const resp = await session.getRequest('views/'+id+'/complete')
                         
-                        if(id == 1){
-                            
-                            resp.json()
-                                .then( d => {
-                                    
-                                    this.view_1 = { 
-                                        "id": "view-1",
-                                        "snps": d.snps.map(d => {
-                                            d['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;
-                                            d['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+d.snp;
-                                            return d;
-                                        }), 
-                                        "description": d.description,
-                                        "prediction": d.prediction
-                                    };
-
-
-                                })
-
-                        }
-
-                        if(id == 2){
-
-                            resp.json()
-                                .then( d => {
-                                    
-                                    this.view_2 = { 
-                                        "id": "view-2",
-                                        "snps": d.snps.map(d => {
-                                            d['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;
-                                            d['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+d.snp;
-                                            return d;
-                                        }), 
-                                        "description": d.description,
-                                        "prediction": d.prediction
-                                    };
-
-                                })
-                        }
                     }
                 },
                 async created(){
