@@ -21,15 +21,44 @@
             <div class="page-wrapper">
                 <div class="page-body">
                     <div class="d-flex h-100 justify-content-center align-items-center">
-                        <div class="row row-deck row-cards w-100" v-if="currentView == 1">
-                            <div class="col-md-6">
-                                <tabela v-bind:snps="view_1.snps"></tabela>
+                        <keep-alive>
+                            <div class="row row-deck row-cards w-100" v-if="currentView == 1">
+                                <div class="col-md-6">
+                                    <tabela v-bind:id="1" v-bind:snps="view_1.snps"></tabela>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header align-bottom">
+                                            <h1>Donut</h1>
+                                        </div>
+                                        <div class="card-body">
+                                            <keep-alive>
+                                                <donut v-bind:user="user" v-bind:id="1" v-bind:data="view_1.prediction"></donut>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <donut v-bind:user="user" v-bind:description="view_1.description"></donut>
+                        </keep-alive>
+                        <keep-alive>
+                            
+                            <div class="row row-deck row-cards w-100" v-if="currentView == 2">
+                                <div class="col-md-6">
+                                    <tabela v-bind:id="2" v-bind:snps="view_2.snps"></tabela>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header align-bottom">
+                                            <h1>Donut</h1>
+                                        </div>
+                                        <div class="card-body">
+                                            <donut v-bind:user="user" v-bind:id="2" v-bind:data="view_2.prediction"></donut>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                             </div>
-                        </div>
-                        
+                        </keep-alive>    
                     </div>
                 </div>
             </div>
@@ -80,29 +109,53 @@
                     views: [],
                     user: userData,
                     currentView: 0,
-                    view_1: []
+                    view_1: {},
+                    view_2: {}
                 },
                 methods: {
                     setView: async function(id){
                         this.currentView = id;
                         const resp = await session.getRequest('views/'+id+'/complete')
-
-                        newDonut('chart-demo-pie');
-
-                        resp.json()
-                            .then( d => {
-
-                                this.view_1 = { 
+                        
+                        if(id == 1){
+                            
+                            resp.json()
+                                .then( d => {
+                                    
+                                    this.view_1 = { 
+                                        "id": "view-1",
                                         "snps": d.snps.map(d => {
                                             d['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;
                                             d['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+d.snp;
                                             return d;
                                         }), 
-                                        "description": d.description
+                                        "description": d.description,
+                                        "prediction": d.prediction
                                     };
 
-                                updateDonut('my-donut', d.prediction);
-                            })
+
+                                })
+
+                        }
+
+                        if(id == 2){
+
+                            resp.json()
+                                .then( d => {
+                                    
+                                    this.view_2 = { 
+                                        "id": "view-2",
+                                        "snps": d.snps.map(d => {
+                                            d['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;
+                                            d['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+d.snp;
+                                            return d;
+                                        }), 
+                                        "description": d.description,
+                                        "prediction": d.prediction
+                                    };
+
+                                })
+                        }
                     }
                 },
                 async created(){
@@ -131,16 +184,6 @@
 
 </script>
 
-<script type="text/x-template" id="donut-template">
-    <div class="card">
-        <div class="card-header align-bottom">
-            <h1>Donut</h1>
-        </div>
-        <div class="card-body">
-            <div id="chart-demo-pie" class="chart-lg"></div>
-        </div>
-    </div>
-</script>
 
 <script type="text/x-template" id="page-content">
     <h1>
@@ -197,18 +240,7 @@
 </script>
 
 <script type="text/x-template" id="donut-template">
-    <div class="card">
-        <div class="card-header align-bottom">
-            <h1>Donut</h1>
-        </div>
-        <div class="card-body">
-            <div id="chart-demo-pie" class="chart-lg"></div>
-        </div>
-        <div class="card-footer">
-            testee
-        </div>
-        
-    </div>
+    <div v-bind:id="idDiv" class="chart-lg"></div>
 </script>
 
 

@@ -1,7 +1,7 @@
-function newDonut(div) {
+function newDonut(div, idDonut) {
     donut = new ApexCharts(document.getElementById(div), {
         chart: {
-            id: "my-donut",
+            id: idDonut,
             type: "donut",
             fontFamily: 'inherit',
             height: '400',
@@ -48,14 +48,13 @@ function newDonut(div) {
         tooltip: {
             fillSeriesColor: false
         },
-    }).render();
+    });
 
     return donut
 }
 
 function updateDonut(id, data){
 
-    console.log(id, getLabelsDonut(data))
     ApexCharts.exec(id, 'updateSeries', 
         getSeriesDonut(data)
     , true)
@@ -69,15 +68,14 @@ function updateDonut(id, data){
 }
 
 function getSeriesDonut(data){
-    //return data.map(item =>  item.value)
+
     return Object.values(data).filter( d => {
         if(d > 0) return d
     })
 }
 
 function getLabelsDonut(data){
-    //return data.map(item => item.label)
-    console.log(Object.entries(data))
+
     return Object.entries(data).filter( d => {
         if(d[1] > 0 ) return d
     }).map( d => {
