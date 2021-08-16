@@ -21,10 +21,11 @@ Vue.component("donut", {
 
         this.donut.render()
         
+        console.log(document.getElementById(this.$data.idDiv))
         updateDonut(this.$data.idDonut, data.prediction)
 
     },
     destroyed: function(){
-
+        this.donut.destroy()
     }
 })

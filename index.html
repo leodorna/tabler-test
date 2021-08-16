@@ -114,9 +114,7 @@
                 },
                 methods: {
                     setView: async function(id){
-                        this.currentView = id;
-                        const resp = await session.getRequest('views/'+id+'/complete')
-                        
+                        this.currentView = id;                        
                     }
                 },
                 async created(){
