@@ -8,6 +8,10 @@
         height: 100%;
     }
 
+    .pointer-click{
+        cursor: pointer;
+    }
+
 </style>
 
 <html>
@@ -21,10 +25,27 @@
             <div class="page-wrapper">
                 <div class="page-body">
                     <div class="d-flex h-100 justify-content-center align-items-center">
+                        <users-list v-if="targetUser == null && user.is_superuser && currentView > 0"></users-list>
+
                         <keep-alive>
-                            <div class="row row-deck row-cards w-100" v-if="currentView == 1">
+                            <div class="row row-deck row-cards w-100" v-if="currentView == 1 && targetUser != null">
+                                <div class="col-md-12" v-if="user.is_superuser">
+                                    <a class="card pointer-click" v-on:click="targetUser = null">
+                                        <div class="card-body"> 
+                                            <h3 class="nav-link">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-narrow-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                    <line x1="5" y1="12" x2="9" y2="16"></line>
+                                                    <line x1="5" y1="12" x2="9" y2="8"></line>
+                                                 </svg>
+                                                 Voltar
+                                            </h3>
+                                        </div>
+                                    </a>
+                                </div>
                                 <div class="col-md-6">
-                                    <tabela v-bind:id="1" v-bind:snps="view_1.snps"></tabela>
+                                    <tabela v-bind:id="1" v-bind:target-user="targetUser"></tabela>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card">
@@ -32,7 +53,7 @@
                                             <h1>Donut</h1>
                                         </div>
                                         <div class="card-body">
-                                            <donut v-bind:user="user" v-bind:id="1" v-bind:data="view_1.prediction"></donut>
+                                            <donut v-bind:user="user" v-bind:id="1" v-bind:target-user="targetUser"></donut>
                                         </div>
 
                                         <div class="card-footer">
@@ -42,11 +63,26 @@
                                 </div>
                             </div>
                         </keep-alive>
-                        <keep-alive>
-                            
-                            <div class="row row-deck row-cards w-100" v-if="currentView == 2">
+
+                        <keep-alive>    
+                            <div class="row row-deck row-cards w-100" v-if="currentView == 2 && targetUser != null">
+                                <div class="col-md-12" v-if="user.is_superuser">
+                                    <a class="card pointer-click" v-on:click="targetUser = null">
+                                        <div class="card-body"> 
+                                            <h3 class="nav-link">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-narrow-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                    <line x1="5" y1="12" x2="9" y2="16"></line>
+                                                    <line x1="5" y1="12" x2="9" y2="8"></line>
+                                                 </svg>
+                                                 Voltar
+                                            </h3>
+                                        </div>
+                                    </a>
+                                </div>
                                 <div class="col-md-6">
-                                    <tabela v-bind:id="2" v-bind:snps="view_2.snps"></tabela>
+                                    <tabela v-bind:id="2" v-bind:target-user="targetUser"></tabela>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card">
@@ -54,7 +90,7 @@
                                             <h1>Donut</h1>
                                         </div>
                                         <div class="card-body">
-                                            <donut v-bind:user="user" v-bind:id="2" v-bind:data="view_2.prediction"></donut>
+                                            <donut v-bind:user="user" v-bind:id="2" v-bind:target-user="targetUser"></donut>
                                         </div>
                                         <div class="card-footer">
                                             {{getDescription(2)}}
@@ -64,6 +100,8 @@
                                 
                             </div>
                         </keep-alive>    
+
+
                     </div>
                 </div>
             </div>
@@ -85,6 +123,7 @@
 <script src="vue_components_js/navbar.js"></script>
 <script src="vue_components_js/tabela.js"></script>
 <script src="vue_components_js/donut.js"></script>
+<script src="vue_components_js/users_list.js"></script>
 
 <!-- Charts -->
 <script src="./charts/donut.js"></script>
@@ -101,36 +140,48 @@
         template: "#page-content"
     })
 
+
     let donut = null;
 
     session.collectToken()
         .then( userData => {
             Vue.prototype.$user = userData
 
-
             appTemplate = new Vue({
                 el: "#app",
                 data: {
                     views: [],
                     user: userData,
+                    targetUser: null,
                     currentView: 0,
                     view_1: {},
                     view_2: {}
                 },
                 methods: {
                     setView: async function(id){
-                        this.currentView = id;                  
+                        this.currentView = id;
                     },
                     getDescription: function(id){
                         return this.views.filter( d => {
                             if(d.id == id) return d
                         })[0].description
+                    },
+                    getViewUrl(id, targetUser=null){
+                        if(this.user.is_superuser){
+                            return 'views/'+id+'/user/'+targetUser+'/complete'
+                        } else {
+                            return 'views/'+id+'/complete'
+                        }
+                        
                     }
+
 
                 },
                 async created(){
                     this.view = 0;
                     this.user = userData
+
+                    if(!this.user.is_superuser) this.targetUser = 0
 
                     const viewsResponse = await session.getRequest('views/')
                     
@@ -161,6 +212,24 @@
     </h1>
 </script>
 
+<script type="text/x-template" id="users-list-template">
+    <div class="row row-deck row-cards w-100">
+        <div class="col-md-12">
+            <div class="row row-deck row-cards">
+                <div class="col-12" v-for="(user, i) in users">
+                    <a class="card" v-on:click="getInfoUser(i+1, user)">
+                        <div class="card-body">
+                            <h3 class="card-title">{{user.name}}</h3>
+                            <span class="card-subtitle">{{user.email}}</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</script>
+
 <script type="text/x-template" id="navbar-menu">
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav pt-lg-3 d-flex">
@@ -169,11 +238,6 @@
                     <span class="title"><h3>{{user.name}}</h3></span>
                     
                 </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="https://www.google.com">
-                    <span class="nav-link-title">Página Inicial</span>
-                </a>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" role="button" aria-expanded="false">
@@ -232,8 +296,8 @@
                         </thead>
                         <tbody>
                             <tr v-for="snp in snps">
-                                <td><a :href="snp.url_snp">{{ snp.snp }}</a></td>
-                                <td><a :href="snp.url_gene">{{ snp.gene }}</a></td>
+                                <td><a :href="snp.url_snp" target="_blank">{{ snp.snp }}</a></td>
+                                <td><a :href="snp.url_gene" target="_blank">{{ snp.gene }}</a></td>
                                 <td>{{ snp.genotype }}</td>
                             </tr>
                         </tbody>
