@@ -1,5 +1,5 @@
-Vue.component("donut", {
-    props : ['user', 'id', 'targetUser'],
+var DonutComponent = Vue.component("donut", {
+    props : ['user', 'id', 'targetUser', 'prediction'],
     template : "#donut-template",
     data : function(){
         return {
@@ -10,23 +10,30 @@ Vue.component("donut", {
     },
     mounted: async function(){
 
-        const fetchUrl = this.$root.getViewUrl(this.$props.id, this.$props.targetUser.id)
+        // const fetchUrl = this.$root.getViewUrl(this.$props.id, this.$props.targetUser)
 
-        const resp = await session.getRequest(fetchUrl)        
+        // const resp = await session.getRequest(fetchUrl)        
         
-        const data = await resp.json();
+        // const data = await resp.json();
 
         if(this.donut == null){
             this.donut = newDonut(this.$data.idDiv, this.$data.idDonut)
 
         }
-
         this.donut.render()
+        if(this.$props.prediction){
+            updateDonut(this.$data.idDonut, this.$props.prediction)
+        }
         
-        updateDonut(this.$data.idDonut, data.prediction)
-
     },
     destroyed: function(){
         this.donut.destroy()
+    },
+    watch: {
+        prediction:{
+            handler: function(){
+                console.log(this.$props.prediction)
+            }
+        }
     }
 })

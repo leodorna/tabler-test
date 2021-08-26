@@ -68,18 +68,11 @@ function updateDonut(id, data){
 }
 
 function getSeriesDonut(data){
-
-    return Object.values(data).filter( d => {
-        if(d > 0) return d
-    })
+    return Object.values(data)
 }
 
 function getLabelsDonut(data){
-
-    return Object.entries(data).filter( d => {
-        if(d[1] > 0 ) return d
-    }).map( d => {
-        return d[0]
-    })
+    
+    return Object.keys(data)
 }
 

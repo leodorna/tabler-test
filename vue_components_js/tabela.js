@@ -1,27 +1,27 @@
-Vue.component("tabela", {
-    props: ["id", "targetUser"],
-    template: "#tabela-template",
+var TableComponent = Vue.component("tabela", {
+    props: ["id", "targetUser", "snps"],
+    template: "#tabela-template"
 
-    data:  function(){
-        return {
-            snps: []
-        }
-    },
-    mounted: async function(){
-        let id = this.$props.id
+    // data:  function(){
+    //     return {
+    //         snps: []
+    //     }
+    // },
+    // mounted: async function(){
+    //     let id = this.$props.id
 
-        const fetchUrl = this.$root.getViewUrl(this.$props.id, this.$props.targetUser.id)
+    //     const fetchUrl = this.$root.getViewUrl(this.$props.id, this.$props.targetUser.id)
 
-        const resp = await session.getRequest(fetchUrl)
+    //     const resp = await session.getRequest(fetchUrl)
 
-        let data = await resp.json()
-        console.log(data)
-        this.snps = data.snps.map( d => {
-                        d['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;
-                        d['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+d.snp;
-                        return d;
-                    })
+    //     let data = await resp.json()
         
-    }
+    //     this.snps = data.snps.map( d => {
+    //                     d['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;
+    //                     d['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+d.snp;
+    //                     return d;
+    //                 })
+        
+    // }
 
 })

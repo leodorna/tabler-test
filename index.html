@@ -25,14 +25,15 @@
             <div class="page-wrapper">
                 <div class="page-body">
                     <div class="d-flex h-100 justify-content-center align-items-center">
-                        <users-list v-if="targetUser == null && user.is_superuser && currentView > 0"></users-list>
+                        <users-list v-if="targetUser == null && user.is_superuser && currentView.id > 0"></users-list>
 
                         <keep-alive>
-                            <div class="row row-deck row-cards w-100" v-if="currentView == 1 && targetUser != null">
+                            <div class="row row-deck row-cards w-100" v-if="currentView.id == 1 && targetUser != null">
                                 <div class="col-md-12" v-if="user.is_superuser">
                                     <voltar></voltar>
                                 </div>
-                                <div class="col-md-12">
+                                <eyes-view v-for="view in currentView.views" v-bind:target-user="targetUser" v-bind:key="view.id" v-bind:view="view"></eyes-view>
+                                <!-- <div class="col-md-12">
                                     <div class="card">
                                         <div class="card-header align-bottom">
                                             <h1>Teste</h1>
@@ -94,7 +95,7 @@
                                             <span class="card-subtitle">{{getDescription(2)}}</span>
                                         </div>
                                     </div>
-                                    
+                                     -->
                                 </div>
                             </div>
                         </keep-alive>
@@ -148,6 +149,7 @@
 <!-- Javascript Classes -->
 <script src="classes/Token.js"></script>
 <script src="classes/Session.js"></script>
+<script src="classes/Views.js"></script>
 
 <!-- Vue Components -->
 <script src="vue_components_js/navbar.js"></script>
@@ -155,6 +157,7 @@
 <script src="vue_components_js/donut.js"></script>
 <script src="vue_components_js/users_list.js"></script>
 <script src="vue_components_js/botao_voltar.js"></script>
+<script src="vue_components_js/eye_view.js"></script>
 
 <!-- Charts -->
 <script src="./charts/donut.js"></script>
@@ -163,7 +166,7 @@
 
     let homeTemplate;
     let navTemplate;
-
+    const views = new Views()
     const session = new Session('https://sbcb.inf.ufrgs.br/forense/api/v1/');
 
     home = Vue.component("page-content", {
@@ -184,16 +187,51 @@
                     views: [],
                     user: userData,
                     targetUser: null,
-                    currentView: 0,
+                    currentView: [],
                     view_1: {},
                     view_2: {}
                 },
                 methods: {
                     setView: async function(id){
-                        this.currentView = id;
+                        this.currentView = {
+                            'id': id,
+                            'views': [
+                                {'id': 1},
+                                {'id': 2}
+                            ]
+                        }
                     },
-                    fetchView: async function(){
+                    fetchView: async function(targetUser){
+                        let views = [
+                            {
+                                url: this.getViewUrl(1, targetUser), 
+                                prediction: [], 
+                                snps: [],
+                                class: '' 
+                            },
+                            {
+                                url: this.getViewUrl(2, targetUser), 
+                                prediction: [], 
+                                snps: [],
+                                class: '' 
+                            }
+                        ]
 
+                        views.forEach(async (d) => {
+                            const resp = await session.getRequest(d.url)
+
+                            const data = await resp.json()
+
+                            d.prediction = data.prediction
+                            d.snps = data.snps.map( snp => {
+                                    snp['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+snp.gene;
+                                    snp['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+snp.snp;
+                                    return snp;
+                                })
+                            d.class = data.classe_real
+                        })
+
+                        this.view_1 = views
                     },
                     getDescription: function(id){
                         return this.views.filter( d => {
@@ -345,6 +383,38 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+</script>
+
+<script type="text/x-template" id="eyes-view-template">
+    <div class="card">
+        <div class="card-header align-bottom">
+            <h1>{{title}}</h1>
+        </div>
+        <div class="card-body">
+                <div class="row row-deck row-cards">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <donut v-bind:user="user" v-bind:id="view.id" v-bind:target-user="targetUser" v-bind:prediction="prediction" v-if="prediction"></donut>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <tabela v-bind:id="view.id" v-bind:snps="snps"></tabela>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+        </div>
+        <div class="card-footer">
+            <span class="card-title">Classe Real: {{classe_real}}</span>
+            <span class="card-subtitle">{{getDescription(view.id)}}</span>
         </div>
     </div>
 </script>
