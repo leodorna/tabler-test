@@ -12,13 +12,13 @@ Vue.component("users-list", {
         const resp = await session.getRequest('users/')
 
         let users = await resp.json()
-        
         this.users = users.data;
 
     },
     methods: {
-        getInfoUser: async function(userId){
-            this.$root.targetUser = userId               
+        getInfoUser: async function(userId, user){
+            user['id'] = userId
+            this.$root.targetUser = user               
         }
     }
 

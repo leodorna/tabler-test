@@ -10,7 +10,7 @@ Vue.component("donut", {
     },
     mounted: async function(){
 
-        const fetchUrl = this.$root.getViewUrl(this.$props.id, this.$props.targetUser)
+        const fetchUrl = this.$root.getViewUrl(this.$props.id, this.$props.targetUser.id)
 
         const resp = await session.getRequest(fetchUrl)        
         
