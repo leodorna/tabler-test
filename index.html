@@ -390,7 +390,11 @@
 <script type="text/x-template" id="eyes-view-template">
     <div class="card">
         <div class="card-header align-bottom">
-            <h1>{{title}}</h1>
+            <div>
+                <h1>{{title}}</h1>
+                <span class="card-subtitle">{{getDescription(view.id)}}</span>
+            </div>   
+            
         </div>
         <div class="card-body">
                 <div class="row row-deck row-cards">
@@ -413,8 +417,8 @@
                 
         </div>
         <div class="card-footer">
+            <span class="card-title">Amostra: {{targetUser.sample}}</span>
             <span class="card-title">Classe Real: {{classe_real}}</span>
-            <span class="card-subtitle">{{getDescription(view.id)}}</span>
         </div>
     </div>
 </script>
