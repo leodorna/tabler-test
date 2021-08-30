@@ -291,7 +291,12 @@
                 <div class="col-3" v-for="(user, i) in users" v-if="user.sample" >
                     <a class="card" v-on:click="getInfoUser(i+1, user)">
                         <div class="card-body">
-                            <h2 class="card-title">{{user.sample}}</h2>
+                            <div class="col-12">
+                                <h2 class="card-title">{{user.sample}}</h2>
+                                <span class="card-subtitle">{{user.name}}</span><br/>
+                                <span class="card-subtitle">{{user.email}}</span>
+                                
+                            </div>
                         </div>
                     </a>
                 </div>
