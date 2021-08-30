@@ -22,6 +22,12 @@ function newDonut(div, idDonut) {
                 }
             }
         },
+        dataLabels: {
+            enabled: true,
+            formatter: function(val){
+                return val + '%'
+            },
+        },
         fill: {
             opacity: 1,
         },
