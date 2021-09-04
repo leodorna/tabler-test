@@ -1,9 +1,9 @@
 nav = Vue.component("nav-bar", {
-    props : ['views', 'user'],
+    props : ['categories', 'user'],
     template : "#navbar-menu",
     methods : {
-        setView: function(id){
-            this.$root.setView(id)
+        setView: function(c){
+            this.$root.setView(c)
         }
     }
 })

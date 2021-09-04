@@ -11,6 +11,7 @@ Vue.component("eyes-view", {
             prediction: 0,
             classe_real: '',
             title: '',
+            description: this.$props.view.description,
             user: this.$root.user
         }
     },
@@ -20,6 +21,7 @@ Vue.component("eyes-view", {
         }
     },
     mounted: async function(){
+        console.log(this.$props.view)
         
         const fetchUrl = this.$root.getViewUrl(this.$props.view.id, this.$props.targetUser.id)
         const resp = await session.getRequest(fetchUrl)

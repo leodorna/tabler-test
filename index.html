@@ -17,9 +17,9 @@
 <html>
     <body class="antialiased">
         <div id="app" class="wrapper">
-            <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+            <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark" v-on:click="printCategories">
                 <div class="container-fluid">
-                    <nav-bar  v-bind:user="user" v-bind:views="views"></nav-bar>
+                    <nav-bar  v-bind:user="user" v-bind:categories="categories"></nav-bar>
                 </div>
             </aside>
             <div class="page-wrapper">
@@ -185,6 +185,7 @@
                 el: "#app",
                 data: {
                     views: [],
+                    categories: [],
                     user: userData,
                     targetUser: null,
                     currentView: [],
@@ -192,16 +193,14 @@
                     view_2: {}
                 },
                 methods: {
-                    setView: async function(id){
-                        this.currentView = {
-                            'id': id,
-                            'views': [
-                                {'id': 1},
-                                {'id': 2}
-                            ]
-                        }
+                    printCategories: function(){
+                        console.log(this.categories)
+                    },
+                    setView: async function(category){
+                        this.currentView = category
                     },
                     fetchView: async function(targetUser){
+
                         let views = [
                             {
                                 url: this.getViewUrl(1, targetUser), 
@@ -234,9 +233,7 @@
                         this.view_1 = views
                     },
                     getDescription: function(id){
-                        return this.views.filter( d => {
-                            if(d.id == id) return d
-                        })[0].description
+                        return this.currentView.views[id].description
                     },
                     getViewUrl(id, targetUser=null){
                         if(this.user.is_superuser){
@@ -255,12 +252,19 @@
 
                     if(!this.user.is_superuser) this.targetUser = 0
 
-                    const viewsResponse = await session.getRequest('views/')
-                    
-                    viewsResponse.json()
-                        .then( d => {
-                            this.views = d.data
+                    const categoriesResponse = await session.getRequest('categories/')
+                    const categoriesJson = await categoriesResponse.json()
+
+                    for(let category of categoriesJson.data){
+                        let viewsResponse = await session.getRequest('views/category/'+category.id)
+                        let viewsJson = await viewsResponse.json()
+
+                        this.categories.push({
+                            id: category.id,
+                            name: category.name,
+                            views: viewsJson
                         })
+                    }                    
                 }
             })
 
@@ -323,12 +327,9 @@
                 <div class="dropdown-menu">
                   <div class="dropdown-menu-columns">
                     <div class="dropdown-menu-column">
-                        <!-- <a class="dropdown-item" v-for="v in views" v-on:click="setView(v.id)">
-                            {{v.title}}
-                        </a> -->
-                        <a class="dropdown-item" v-on:click="setView(1)">
-                            Olhos
-                        </a>
+                        <a class="dropdown-item" v-for="c in categories" v-on:click="setView(c)">
+                            {{c.name}}
+                        </a> 
                     </div>
                   </div>
                 </div>
@@ -400,7 +401,7 @@
         <div class="card-header align-bottom">
             <div>
                 <h1>{{title}}</h1>
-                <span class="card-subtitle">{{getDescription(view.id)}}</span>
+                <span class="card-subtitle">{{description}}</span>
             </div>   
             
         </div>
