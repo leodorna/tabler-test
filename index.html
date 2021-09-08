@@ -28,7 +28,7 @@
                         <users-list v-if="targetUser == null && user.is_superuser && currentView.id > 0"></users-list>
 
                         <keep-alive>
-                            <div class="row row-deck row-cards w-100" v-if="currentView.id == 1 && targetUser != null">
+                            <div class="row row-deck row-cards w-100" v-if="targetUser != null">
                                 <div class="col-md-12" v-if="user.is_superuser">
                                     <voltar></voltar>
                                 </div>
@@ -258,7 +258,7 @@
                     for(let category of categoriesJson.data){
                         let viewsResponse = await session.getRequest('views/category/'+category.id)
                         let viewsJson = await viewsResponse.json()
-
+                        console.log(category, viewsJson)
                         this.categories.push({
                             id: category.id,
                             name: category.name,
