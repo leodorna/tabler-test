@@ -21,9 +21,9 @@ Vue.component("eyes-view", {
         }
     },
     mounted: async function(){
-        console.log(this.$props.view)
         
         const fetchUrl = this.$root.getViewUrl(this.$props.view.id, this.$props.targetUser.id)
+
         const resp = await session.getRequest(fetchUrl)
 
         let data = await resp.json()
@@ -31,6 +31,9 @@ Vue.component("eyes-view", {
         this.title = data.title
         this.prediction = data.prediction
         this.classe_real = data.classe_real
+
+        console.log(data.prediction)
+
         this.snps = data.snps.map( d => {
             d['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;
             d['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+d.snp;

@@ -32,7 +32,6 @@ var DonutComponent = Vue.component("donut", {
     watch: {
         prediction:{
             handler: function(){
-                console.log(this.$props.prediction)
             }
         }
     }
