@@ -4,6 +4,8 @@
 <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/css/tabler.min.css">
 <link rel="stylesheet" href="login.css">
 
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
 <html>
     <body>
         <div id="container" class ="container h-100">
@@ -40,6 +42,7 @@
                                     <div class="col">
                                         <a href="#">Esqueceu sua senha?</a>
                                     </div>
+                                    <span v-if="incorrect" class="red">E-mail ou senha inválidos</span>
                                 </div>
                             </div>    
                             <div class="card-footer text-end">
@@ -92,8 +95,9 @@
                 redirectUser('index.html')
             }
             
+        } else {
+            app.incorrectCredentials()
         }
-        
         
     }
 
@@ -124,6 +128,18 @@
     function redirectUser(url){
         window.location.href = url;
     }
+
+    var app = new Vue({
+        el: "#container",
+        data: {
+            incorrect: false
+        },
+        methods: {
+            incorrectCredentials(){
+                this.incorrect = true
+            }
+        }
+    })
 
     const form = document.querySelector('form');
     form.addEventListener('submit', handleSubmit);
