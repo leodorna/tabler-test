@@ -24,7 +24,7 @@
             </aside>
             <div class="page-wrapper">
                 <div class="page-body">
-                    <div class="d-flex h-100 justify-content-center align-items-center">
+                    <div class="d-flex h-100 justify-content-center align-items-center" v-if="ready">
                         <users-list v-if="targetUser == null && user.is_superuser && currentView.id > 0"></users-list>
 
                         <keep-alive>
@@ -190,11 +190,11 @@
                     targetUser: null,
                     currentView: [],
                     view_1: {},
+                    ready: false,
                     view_2: {}
                 },
                 methods: {
                     printCategories: function(){
-                        console.log(this.categories)
                     },
                     setView: async function(category){
                         this.currentView = category
@@ -222,6 +222,7 @@
                             const data = await resp.json()
 
                             d.prediction = data.prediction
+                            
                             d.snps = data.snps.map( snp => {
                                     snp['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+snp.gene;
                                     snp['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+snp.snp;
@@ -258,13 +259,15 @@
                     for(let category of categoriesJson.data){
                         let viewsResponse = await session.getRequest('views/category/'+category.id)
                         let viewsJson = await viewsResponse.json()
-                        console.log(category, viewsJson)
+                        
                         this.categories.push({
                             id: category.id,
                             name: category.name,
                             views: viewsJson
                         })
                     }                    
+
+                    this.ready = true
                 }
             })
 
