@@ -1,4 +1,4 @@
-Vue.component("eyes-view", {
+const EyesView = Vue.component("eyes-view", {
     props : ['view', 'targetUser'],
     template : "#eyes-view-template",
     components: {

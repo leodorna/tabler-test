@@ -25,114 +25,18 @@
             <div class="page-wrapper">
                 <div class="page-body">
                     <div class="d-flex h-100 justify-content-center align-items-center" v-if="ready">
+                        <router-view></router-view>
+                        <!--
                         <users-list v-if="targetUser == null && user.is_superuser && currentView.id > 0"></users-list>
-
                         <keep-alive>
                             <div class="row row-deck row-cards w-100" v-if="targetUser != null">
                                 <div class="col-md-12" v-if="user.is_superuser">
                                     <voltar></voltar>
                                 </div>
                                 <eyes-view v-for="view in currentView.views" v-bind:target-user="targetUser" v-bind:key="view.id" v-bind:view="view"></eyes-view>
-                                <!-- <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-header align-bottom">
-                                            <h1>Teste</h1>
-                                        </div>
-                                        <div class="card-body">
-                                                <div class="row row-deck row-cards">
-                                                    <div class="col-md-6">
-                                                        <div class="card">
-                                                            <div class="card-body">
-                                                                <donut v-bind:user="user" v-bind:id="1" v-bind:target-user="targetUser"></donut>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="card">
-                                                            <div class="card-body">
-                                                                <tabela v-bind:id="1" v-bind:target-user="targetUser"></tabela>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                </div>
-                                                
-                                        </div>
-                                        <div class="card-footer">
-                                            <span class="card-title">teste</span>
-                                            <span class="card-subtitle">{{getDescription(1)}}</span>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-header align-bottom">
-                                            <h1>Teste</h1>
-                                        </div>
-                                        <div class="card-body">
-                                                <div class="row row-deck row-cards">
-                                                    <div class="col-md-6">
-                                                        <div class="card">
-                                                            <div class="card-body">
-                                                                <donut v-bind:user="user" v-bind:id="2" v-bind:target-user="targetUser"></donut>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="card">
-                                                            <div class="card-body">
-                                                                <tabela v-bind:id="2" v-bind:target-user="targetUser"></tabela>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                </div>
-                                                
-                                        </div>
-                                        <div class="card-footer">
-                                            <span class="card-title">teste</span>
-                                            <span class="card-subtitle">{{getDescription(2)}}</span>
-                                        </div>
-                                    </div>
-                                     -->
-                                </div>
                             </div>
                         </keep-alive>
-
-                        <keep-alive>    
-                            <div class="row row-deck row-cards w-100" v-if="currentView == 2 && targetUser != null">
-                                <div class="col-md-12" v-if="user.is_superuser">
-                                    <voltar></voltar>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header align-bottom">
-                                            <h1>Tabela</h1>
-                                        </div>
-                                        <div class="card-body">
-                                            <tabela v-bind:id="2" v-bind:target-user="targetUser"></tabela>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header align-bottom">
-                                            <h1>Donut</h1>
-                                        </div>
-                                        <div class="card-body">
-                                            <donut v-bind:user="user" v-bind:id="2" v-bind:target-user="targetUser"></donut>
-                                        </div>
-                                        <div class="card-footer">
-                                            {{getDescription(2)}}
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                        </keep-alive>    
-
-
+                        -->  
                     </div>
                 </div>
             </div>
@@ -144,6 +48,7 @@
 <!-- Tabler, Vue and ApexCharts -->
 <script src="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/js/tabler.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <!-- Javascript Classes -->
@@ -158,6 +63,7 @@
 <script src="vue_components_js/users_list.js"></script>
 <script src="vue_components_js/botao_voltar.js"></script>
 <script src="vue_components_js/eye_view.js"></script>
+<script src="vue_components_js/list_categories.js"></script>
 
 <!-- Charts -->
 <script src="./charts/donut.js"></script>
@@ -169,11 +75,39 @@
     const views = new Views()
     const session = new Session('https://sbcb.inf.ufrgs.br/forense/api/v1/');
 
-    home = Vue.component("page-content", {
+
+    const home = Vue.component("page-content", {
         props : ['view', 'user', 'idView'],
         template: "#page-content"
     })
 
+    const routes = [
+        {
+            path: '/',
+            name: 'Home',
+            component: home
+        },
+        {
+            path: '/users',
+            name: 'UsersList',
+            component: UsersList,
+        },
+        {
+            path: '/users/:id/',
+            name: 'ListCategories',
+            component: ListCategories
+        },
+        {
+            path: 'users/:id/:category/',
+            name: 'Views',
+            component: EyesView
+        }
+    ]
+
+
+    const router = new VueRouter({
+        routes
+    })
 
     let donut = null;
 
@@ -268,7 +202,8 @@
                     }                    
 
                     this.ready = true
-                }
+                },
+                router
             })
 
         })
@@ -297,15 +232,18 @@
             <div class="row row-deck row-cards">
                 <div class="col-3" v-for="(user, i) in users" v-if="user.sample" >
                     <a class="card" v-on:click="getInfoUser(i+1, user)">
-                        <div class="card-body">
-                            <div class="col-12">
-                                <h2 class="card-title">{{user.sample}}</h2>
-                                <span class="card-subtitle">{{user.name}}</span><br/>
-                                <span class="card-subtitle">{{user.email}}</span>
-                                
+                        <router-link :to="{path: '/users/' + user.id}">
+                            <div class="card-body">
+                                <div class="col-12">
+                                    <h2 class="card-title">{{user.sample}}</h2>
+                                    <span class="card-subtitle">{{user.name}}</span><br/>
+                                    <span class="card-subtitle">{{user.email}}</span>
+                                    
+                                </div>
                             </div>
-                        </div>
+                        </router-link>
                     </a>
+                    
                 </div>
             </div>
             
@@ -321,7 +259,12 @@
                     <span class="title"><h3>{{user.name}}</h3></span>   
                 </div>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item">
+                <router-link to="/users">
+                    Informações Usuários
+                </router-link>
+            </li>
+            <!-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" role="button" aria-expanded="false">
                   <span class="nav-link-title">
                     Informações Fenotípicas
@@ -336,7 +279,7 @@
                     </div>
                   </div>
                 </div>
-            </li>
+            </li> -->
             <li class="nav-item mt-auto">
                 <a href="#" class="nav-link" onclick="session.logout()">
                     <span class="nav-link-icon d-md-none d-lg-inline-block text-white">
@@ -431,6 +374,31 @@
         <div class="card-footer">
             <span class="card-title">Amostra: {{targetUser.sample}}</span>
             <span class="card-title">Classe Real: {{classe_real}}</span>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/x-template" id="list-categories">
+    <div class="row row-deck row-cards w-100">
+        <div class="col-md-12">
+            <div class="row row-deck row-cards">
+                <div class="col-6" v-for="category in categories">
+                    
+                    <a class="card">
+                        <router-link :to="{path: '/users/'+ $route.params.id + '/' + category.id}">
+                            <div class="card-body">
+                                <div class="col-12">
+                                    <h2 class="card-title">{{category.name}}</h2>
+                                    <span v-for="v in category.views">{{v.title}}</span>
+                                </div>
+                            </div>
+                        </router-link>
+                    </a>
+
+                </div>
+            </div>
+            
         </div>
     </div>
 </script>

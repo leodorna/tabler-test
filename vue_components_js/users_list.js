@@ -1,4 +1,4 @@
-Vue.component("users-list", {
+const UsersList = Vue.component("users-list", {
     props: [],
     template: "#users-list-template",
 
