@@ -3,7 +3,8 @@ const ListCategories = Vue.component("ListCategories", {
     template: "#list-categories",
     data:  function(){
         return {
-            categories: []
+            categories: [],
+            targetUser: this.$root.targetUser
         }
     },
     mounted: async function(){
@@ -22,7 +23,9 @@ const ListCategories = Vue.component("ListCategories", {
         }          
     },
     methods: {
-
+        setView: function(category){
+            this.$root.setView(category)
+        }
     }
 
 })

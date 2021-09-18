@@ -1,5 +1,5 @@
 const EyesView = Vue.component("eyes-view", {
-    props : ['view', 'targetUser'],
+    props : ['view'],
     template : "#eyes-view-template",
     components: {
         'donut': DonutComponent,
@@ -22,7 +22,7 @@ const EyesView = Vue.component("eyes-view", {
     },
     mounted: async function(){
         
-        const fetchUrl = this.$root.getViewUrl(this.$props.view.id, this.$props.targetUser.id)
+        const fetchUrl = this.$root.getViewUrl(this.$props.view.id, this.$root.targetUser.id)
 
         const resp = await session.getRequest(fetchUrl)
 
@@ -31,8 +31,6 @@ const EyesView = Vue.component("eyes-view", {
         this.title = data.title
         this.prediction = data.prediction
         this.classe_real = data.classe_real
-
-        console.log(data.prediction)
 
         this.snps = data.snps.map( d => {
             d['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+d.gene;

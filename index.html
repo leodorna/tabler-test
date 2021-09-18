@@ -64,6 +64,7 @@
 <script src="vue_components_js/botao_voltar.js"></script>
 <script src="vue_components_js/eye_view.js"></script>
 <script src="vue_components_js/list_categories.js"></script>
+<script src="vue_components_js/category.js"></script>
 
 <!-- Charts -->
 <script src="./charts/donut.js"></script>
@@ -85,7 +86,8 @@
         {
             path: '/',
             name: 'Home',
-            component: home
+            component: home,
+            
         },
         {
             path: '/users',
@@ -95,12 +97,15 @@
         {
             path: '/users/:id/',
             name: 'ListCategories',
-            component: ListCategories
+            component: ListCategories,
+            // children: [
+                
+            // ]
         },
         {
-            path: 'users/:id/:category/',
-            name: 'Views',
-            component: EyesView
+            path: '/users/:id/:category',
+            name: 'Category',
+            component: Category
         }
     ]
 
@@ -130,7 +135,7 @@
                 methods: {
                     printCategories: function(){
                     },
-                    setView: async function(category){
+                    setView: function(category){
                         this.currentView = category
                     },
                     fetchView: async function(targetUser){
@@ -386,7 +391,7 @@
                 <div class="col-6" v-for="category in categories">
                     
                     <a class="card">
-                        <router-link :to="{path: '/users/'+ $route.params.id + '/' + category.id}">
+                        <router-link v-on:click="setView(category)" :to="{path: '/users/'+ $route.params.id + '/' + category.id, props: {cat: category}}" :cat="category">
                             <div class="card-body">
                                 <div class="col-12">
                                     <h2 class="card-title">{{category.name}}</h2>
@@ -401,4 +406,12 @@
             
         </div>
     </div>
+</script>
+
+<script type="text/x-template" id="category-template">
+    <keep-alive>
+        <div class="row row-deck row-cards w-100" v-if="targetUser != null">
+            <eyes-view v-for="view in category.views" v-bind:target-user="targetUser" v-bind:key="view.id" v-bind:view="view"></eyes-view>
+        </div>
+    </keep-alive>
 </script>
