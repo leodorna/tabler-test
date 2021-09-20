@@ -12,7 +12,8 @@ const EyesView = Vue.component("eyes-view", {
             classe_real: '',
             title: '',
             description: this.$props.view.description,
-            user: this.$root.user
+            user: this.$root.user,
+            targetUser: this.$root.targetUser
         }
     },
     methods: {
@@ -23,7 +24,7 @@ const EyesView = Vue.component("eyes-view", {
     mounted: async function(){
         
         const fetchUrl = this.$root.getViewUrl(this.$props.view.id, this.$root.targetUser.id)
-
+        
         const resp = await session.getRequest(fetchUrl)
 
         let data = await resp.json()
