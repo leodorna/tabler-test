@@ -257,7 +257,11 @@
                 </div>
             </li>
             <li class="nav-item">
-                <router-link class="nav-link" to="/users">
+                <router-link class="nav-link" to="/users" v-if="user.is_superuser">
+                    Informações Usuários
+                </router-link>
+
+                <router-link class="nav-link" :to="{path: '/users/'+user.id}" v-if="!user.is_superuser">
                     Informações Usuários
                 </router-link>
             </li>
