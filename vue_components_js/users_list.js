@@ -4,7 +4,8 @@ const UsersList = Vue.component("users-list", {
 
     data:  function(){
         return {
-            users: []
+            users: [],
+            query: ''
         }
     },
     mounted: async function(){
@@ -15,10 +16,21 @@ const UsersList = Vue.component("users-list", {
         this.users = users.data;
 
     },
+    computed: {
+
+    },
     methods: {
         getInfoUser: async function(userId, user){
             user['id'] = userId
             this.$root.targetUser = user               
+        },
+        filterUsers: function(){
+            let regexQuery = new RegExp('^'+this.query.toLowerCase())
+            return this.users.filter( d => {
+                if(d.sample){
+                    return d.sample.toLowerCase().match(regexQuery)
+                } 
+            }) 
         }
     }
 
