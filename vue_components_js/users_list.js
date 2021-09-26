@@ -5,7 +5,9 @@ const UsersList = Vue.component("users-list", {
     data:  function(){
         return {
             users: [],
-            query: ''
+            query: '',
+            skip: 0, // parametro pra por um offset no request de usuarios
+            allUsersFetched: false
         }
     },
     mounted: async function(){
@@ -15,9 +17,7 @@ const UsersList = Vue.component("users-list", {
         let users = await resp.json()
         this.users = users.data;
 
-    },
-    computed: {
-
+        this.increaseCountUsers() 
     },
     methods: {
         getInfoUser: async function(userId, user){
@@ -31,6 +31,19 @@ const UsersList = Vue.component("users-list", {
                     return d.sample.toLowerCase().match(regexQuery)
                 } 
             }) 
+        },
+        getUsers: async function(){
+            const resp = await session.getRequest('users/?skip='+this.skip)
+            let users = await resp.json()
+
+            this.users.push(...users.data)
+            
+            this.increaseCountUsers()
+            
+            if(users.data.length == 0) this.allUsersFetched = true
+        },
+        increaseCountUsers: function(){
+            this.skip += 100 // numero de usuarios pegos
         }
     }
 

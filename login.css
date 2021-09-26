@@ -6,3 +6,9 @@ body{
 .red{
     color: red;
 }
+
+.resize-img{
+    height: auto; 
+    width: auto; 
+    max-height: 80px;
+}
