@@ -2,6 +2,7 @@
 <meta charset="utf-8">
 
 <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/css/tabler.min.css">
+<link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/css/tabler-flags.min.css">
 
 <style>
     body{
@@ -82,7 +83,7 @@
         template: "#page-content"
     })
 
-    const routes = [
+    const routes_superuser = [
         {
             path: '/',
             name: 'Home',
@@ -106,16 +107,47 @@
         }
     ]
 
+    const routes = [
+        {
+            path: '/',
+            name: 'Home',
+            component: home,    
+        },
+        {
+            path: '/fenotipo',
+            name: 'Fenotype',
+            component: ListCategories
+        },
+        {
+            path: '/fenotipo/:category',
+            name: 'Category',
+            component: Category
+        }
 
-    const router = new VueRouter({
-        routes
+    ]
+    
+    let router = {};
+
+    router = new VueRouter({
+        routes_superuser
     })
-
+    
     let donut = null;
 
     session.collectToken()
         .then( userData => {
             Vue.prototype.$user = userData
+            
+            if(userData.is_superuser){
+                router = new VueRouter({
+                    routes: routes_superuser
+                })
+            } else {
+                router = new VueRouter({
+                    routes
+                })
+            }
+
             
             appTemplate = new Vue({
                 el: "#app",
@@ -125,49 +157,13 @@
                     user: userData,
                     targetUser: null,
                     currentView: [],
-                    view_1: {},
                     ready: false,
-                    view_2: {}
                 },
                 methods: {
                     printCategories: function(){
                     },
                     setView: function(category){
                         this.currentView = category
-                    },
-                    fetchView: async function(targetUser){
-
-                        let views = [
-                            {
-                                url: this.getViewUrl(1, targetUser), 
-                                prediction: [], 
-                                snps: [],
-                                class: '' 
-                            },
-                            {
-                                url: this.getViewUrl(2, targetUser), 
-                                prediction: [], 
-                                snps: [],
-                                class: '' 
-                            }
-                        ]
-
-                        views.forEach(async (d) => {
-                            const resp = await session.getRequest(d.url)
-
-                            const data = await resp.json()
-
-                            d.prediction = data.prediction
-                            
-                            d.snps = data.snps.map( snp => {
-                                    snp['url_gene'] = "https://www.genecards.org/cgi-bin/carddisp.pl?gene="+snp.gene;
-                                    snp['url_snp']  = "https://www.ncbi.nlm.nih.gov/snp/"+snp.snp;
-                                    return snp;
-                                })
-                            d.class = data.classe_real
-                        })
-
-                        this.view_1 = views
                     },
                     getDescription: function(id){
                         return this.currentView.views[id].description
@@ -180,28 +176,12 @@
                         }
                         
                     }
-
-
                 },
                 async created(){
                     this.view = 0;
                     this.user = userData
 
-                    if(!this.user.is_superuser) this.targetUser = 0
-
-                    const categoriesResponse = await session.getRequest('categories/')
-                    const categoriesJson = await categoriesResponse.json()
-
-                    for(let category of categoriesJson.data){
-                        let viewsResponse = await session.getRequest('views/category/'+category.id)
-                        let viewsJson = await viewsResponse.json()
-                        
-                        this.categories.push({
-                            id: category.id,
-                            name: category.name,
-                            views: viewsJson
-                        })
-                    }                    
+                    if(!this.user.is_superuser) this.targetUser = 0        
 
                     this.ready = true
                 },
@@ -224,7 +204,7 @@
 
 <script type="text/x-template" id="page-content">
     <h1>
-        Bem-vindo Sr. {{user.name}}!
+        Teste
     </h1>
 </script>
 
@@ -247,7 +227,7 @@
             <div class="col-md-12 mb-3">
                 <div class="row row-deck row-cards">
                     <div class="col-3" v-for="(user, i) in filterUsers()" v-if="user.sample" >
-                        <a class="card" v-on:click="getInfoUser(i+1, user)">
+                        <a class="card" v-on:click="getInfoUser(user)">
                             <router-link :to="{path: '/users/' + user.id}">
                                 <div class="card-body">
                                     <div class="col-12">
@@ -258,6 +238,7 @@
                                     </div>
                                 </div>
                             </router-link>
+                            
                         </a>
                         
                     </div>
@@ -281,12 +262,17 @@
                 </div>
             </li>
             <li class="nav-item">
-                <router-link class="nav-link" to="/users" v-if="user.is_superuser">
+                <router-link class="nav-link" :to="{name: 'Home'}">
+                    Página Inicial
+                </router-link>
+            </li>
+            <li class="nav-item">
+                <router-link class="nav-link" :to="{name: 'UsersList'}" v-if="user.is_superuser">
                     Informações Usuários
                 </router-link>
 
-                <router-link class="nav-link" :to="{path: '/users/'+user.id}" v-if="!user.is_superuser">
-                    Informações Usuários
+                <router-link class="nav-link" to="/fenotipo/" v-if="!user.is_superuser">
+                    Fenótipo
                 </router-link>
             </li>
             <li class="nav-item mt-auto">
@@ -389,35 +375,60 @@
 
 
 <script type="text/x-template" id="list-categories">
-    <div class="row row-deck row-cards w-100">
-        <div class="col-md-12">
-            <div class="row row-deck row-cards">
-                <div class="col-6" v-for="category in categories">
-                    <a class="card" v-on:click="setView(category)">
-                        <router-link :to="{path: '/users/'+ $route.params.id + '/' + category.id}">
-                            <div class="card-body">
-                                <div class="col-12">
-                                    <h2 class="card-title">{{category.name}}</h2>
-                                    
-                                    <span class="badge bg-azure mx-md-1" v-for="v in category.views">{{v.title}}</span>
-                                    
-                                    
-                                </div>
-                            </div>
-                        </router-link>
-                    </a>
-
-                </div>
+    <div class="col-10">
+        <div class="card mb-4" v-if="user.is_superuser">
+            <div class="card-body">
+                <div class="col-12">
+                    <div class="row w-100 mb-2">
+                        <div class="col-md-6">
+                            <h2>Amostra: <span>{{targetUser.sample}}</span></h2>
+                            <h3>Nome: <span>{{targetUser.name}}</span></h3>
+                            <h3>E-mail: <span>{{targetUser.email}}</span></h3>
+                        </div>
+                    </div>
+                </div>  
             </div>
-            
         </div>
+        <div class="card">
+            <div class="card-body">
+                <h3>Fenótipo</h3>
+                <div class="row row-deck row-cards w-100">
+                    <div class="row row-deck row-cards">
+                        <div class="col-6" v-for="category in categories">
+                            <a class="card" v-on:click="setView(category)">
+                                <router-link :to="{path: '/users/'+ $route.params.id + '/' + category.id}" v-if="user.is_superuser">
+                                    <div class="card-body">
+                                        <div class="col-12">
+                                            <h2 class="card-title">{{category.name}}</h2>
+                                            <span class="badge bg-azure mx-md-1" v-for="v in category.views">{{v.title}}</span>
+                                        </div>
+                                    </div>
+                                </router-link>
+                                <router-link :to="{path: '/fenotipo/' + category.id}" v-else>
+                                    <div class="card-body">
+                                        <div class="col-12">
+                                            <h2 class="card-title">{{category.name}}</h2>
+                                            <span class="badge bg-azure mx-md-1" v-for="v in category.views">{{v.title}}</span>
+                                        </div>
+                                    </div>
+                                </router-link>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>         
     </div>
 </script>
 
 <script type="text/x-template" id="category-template">
     <keep-alive>
-        <div class="row row-deck row-cards w-100" v-if="targetUser != null">
-            <eyes-view v-for="view in views" v-bind:key="view.id" v-bind:view="view"></eyes-view>
+        <div class="col-10">
+            <div class="row row-deck row-cards w-100">
+                <eyes-view v-for="view in views" v-bind:key="view.id" v-bind:view="view"></eyes-view>
+            </div>
         </div>
+        
     </keep-alive>
 </script>

@@ -11,7 +11,6 @@ const UsersList = Vue.component("users-list", {
         }
     },
     mounted: async function(){
-
         const resp = await session.getRequest('users/')
 
         let users = await resp.json()
@@ -20,9 +19,9 @@ const UsersList = Vue.component("users-list", {
         this.increaseCountUsers() 
     },
     methods: {
-        getInfoUser: async function(userId, user){
-            user['id'] = userId
-            this.$root.targetUser = user               
+        getInfoUser: async function(user){
+            this.$root.targetUser = user
+            console.log(this.$root.targetUser)
         },
         filterUsers: function(){
             let regexQuery = new RegExp('^'+this.query.toLowerCase())

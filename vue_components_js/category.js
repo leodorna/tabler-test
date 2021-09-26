@@ -21,7 +21,6 @@ const Category = Vue.component("category-template", {
         },
         fetchTargetUser: async function(){
             const userResponse = await session.getRequest('users/'+this.$route.params.id)
-            
             const user = await userResponse.json()
 
         }

@@ -19,11 +19,18 @@ const EyesView = Vue.component("eyes-view", {
     methods: {
         getDescription: function(id){
             return this.$root.getDescription(id)
+        },
+        fetchTargetUser: async function(){
+            const targetUserResponse = await session.getRequest('users/'+this.$route.params.id)
+            this.targetUser = await targetUserResponse.json()
         }
     },
     mounted: async function(){
-        
-        const fetchUrl = this.$root.getViewUrl(this.$props.view.id, this.$root.targetUser.id)
+        if(!this.user.is_superuser) this.targetUser = this.user
+
+        if(!this.targetUser) await this.fetchTargetUser()
+
+        const fetchUrl = this.$root.getViewUrl(this.$props.view.id, this.targetUser.id)
         
         const resp = await session.getRequest(fetchUrl)
 

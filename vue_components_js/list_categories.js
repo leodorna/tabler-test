@@ -4,10 +4,14 @@ const ListCategories = Vue.component("ListCategories", {
     data:  function(){
         return {
             categories: [],
-            targetUser: this.$root.targetUser
+            targetUser: this.$root.targetUser,
+            user: this.$root.user
         }
     },
     mounted: async function(){
+
+        if(!this.targetUser) this.fetchTargetUser()
+
         const categoriesResponse = await session.getRequest('categories/')
         const categoriesJson = await categoriesResponse.json()
 
@@ -21,10 +25,17 @@ const ListCategories = Vue.component("ListCategories", {
                 views: viewsJson
             })
         }          
+
+        console.log(this.targetUser)
     },
     methods: {
         setView: function(category){
             this.$root.setView(category)
+        },
+        fetchTargetUser: async function(){
+            const targetUserResponse = await session.getRequest('users/'+this.$route.params.id)
+            
+            this.targetUser = await targetUserResponse.json()
         }
     }
 
