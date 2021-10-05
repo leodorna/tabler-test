@@ -10,7 +10,7 @@ const ListCategories = Vue.component("ListCategories", {
     },
     mounted: async function(){
 
-        if(!this.targetUser) this.fetchTargetUser()
+        await this.fetchTargetUser()
 
         const categoriesResponse = await session.getRequest('categories/')
         const categoriesJson = await categoriesResponse.json()

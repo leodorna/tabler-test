@@ -7,7 +7,7 @@ const UsersList = Vue.component("users-list", {
             users: [],
             query: '',
             skip: 0, // parametro pra por um offset no request de usuarios
-            allUsersFetched: false
+            allUsersFetched: false // parametro para esconder o botão de carregar novos usuários quando não encontra mais usuarios no banco
         }
     },
     mounted: async function(){
