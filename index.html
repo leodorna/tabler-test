@@ -3,6 +3,8 @@
 
 <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/css/tabler.min.css">
 <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/css/tabler-flags.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
+
 
 <style>
     body{
@@ -15,6 +17,10 @@
 
     a:link{
         text-decoration: none;
+    }
+
+    #gencove{
+        height: 600px;
     }
 </style>
 
@@ -46,11 +52,15 @@
         
 </html>
 
-<!-- Tabler, Vue and ApexCharts -->
+<!-- Tabler, Vue and ApexCharts, LeafLet, Turf, D3js-->
 <script src="https://unpkg.com/@tabler/core@1.0.0-beta3/dist/js/tabler.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+<script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
 
 <!-- Javascript Classes -->
 <script src="classes/Token.js"></script>
@@ -63,6 +73,7 @@
 <script src="vue_components_js/donut.js"></script>
 <script src="vue_components_js/users_list.js"></script>
 <script src="vue_components_js/botao_voltar.js"></script>
+<script src="vue_components_js/map.js"></script>
 <script src="vue_components_js/eye_view.js"></script>
 <script src="vue_components_js/list_categories.js"></script>
 <script src="vue_components_js/category.js"></script>
@@ -389,7 +400,7 @@
                 </div>  
             </div>
         </div>
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-body">
                 <h3>Fenótipo</h3>
                 <div class="row row-deck row-cards w-100">
@@ -416,7 +427,14 @@
                         </div>
                     </div>
                 </div>
-
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h1>Ancestralidade Gencove</h1>
+            </div>
+            <div class="card-body">
+                <map-view></map-view>
             </div>
         </div>         
     </div>
@@ -431,4 +449,9 @@
         </div>
         
     </keep-alive>
+</script>
+
+
+<script type="text/x-template" id="map-template">
+    <div id="gencove"></div>
 </script>

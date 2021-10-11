@@ -1,6 +1,9 @@
 const ListCategories = Vue.component("ListCategories", {
     props: [],
     template: "#list-categories",
+    components:{
+        'map': MapComponent
+    },
     data:  function(){
         return {
             categories: [],
