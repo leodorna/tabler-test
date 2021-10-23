@@ -5,7 +5,8 @@ const MapComponent = Vue.component("map-view", {
     data:  function(){
         return {
             map: null,
-            svg: null
+            svg: null,
+            ancestry_data: null
         }
     },
     mounted: async function(){
@@ -20,12 +21,14 @@ const MapComponent = Vue.component("map-view", {
         const mapRequest = await session.getRequest(fetchUrl)
         const mapJson = await mapRequest.json()
 
+        
         if(this.$root.user.is_superuser){
-            this.fillMap(mapJson.areas)
+            this.ancestry_data = mapJson.areas.sort((a, b) => b.prediction - a.prediction)
         } else {
-            this.fillMap(mapJson)
+            this.ancestry_data = mapJson.sort((a, b) => b.prediction - a.prediction)     
         }
 
+        this.fillMap()
     },
     methods: {
         createMap: function(){
@@ -51,10 +54,9 @@ const MapComponent = Vue.component("map-view", {
             this.svg = svg
 
         },
-        fillMap: function(data){
-
-            console.log(data)
-            data.forEach( d => {
+        fillMap: function(){
+            // iterate over the reverse order so the greater values of prediction stay on the top of the map
+            this.ancestry_data.slice().reverse().forEach( d => {
                 let coords = turf.polygonSmooth(turf.polygon(d.region), {iterations: 8})
                 var polyline = L.geoJson(coords, {color: d.color}).addTo(this.map);
               })

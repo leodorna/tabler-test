@@ -22,6 +22,11 @@
     #gencove{
         height: 600px;
     }
+
+    .ancestry-list{
+        cursor: pointer;
+    }
+    
 </style>
 
 <html>
@@ -453,5 +458,24 @@
 
 
 <script type="text/x-template" id="map-template">
-    <div id="gencove"></div>
+    <div class="col-12">
+        <div class="row w-100">
+            <div class="col-9">
+                <div id="gencove"></div>
+            </div>
+            <div class="col-3">
+                <div class="card h-100">
+                    <div class="card-body card-body-scrollable card-body-scrollable-shadow">
+                        <div class="divide-y">
+                            <div class="ancestry-list" v-for="region in ancestry_data">
+                                <a href="#" class="badge" :style="{backgroundColor: region.color}"></a>
+                                <span class="mx-1">{{region.name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
 </script>
