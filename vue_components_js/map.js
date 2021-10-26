@@ -60,6 +60,9 @@ const MapComponent = Vue.component("map-view", {
                 let coords = turf.polygonSmooth(turf.polygon(d.region), {iterations: 8})
                 var polyline = L.geoJson(coords, {color: d.color}).addTo(this.map);
               })
+        },
+        percent: function(number){
+            return Math.ceil(100*number)+'%'
         }
     }
 

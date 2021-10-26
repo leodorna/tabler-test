@@ -82,6 +82,7 @@
 <script src="vue_components_js/eye_view.js"></script>
 <script src="vue_components_js/list_categories.js"></script>
 <script src="vue_components_js/category.js"></script>
+<script src="vue_components_js/admin_panel.js"></script>
 
 <!-- Charts -->
 <script src="./charts/donut.js"></script>
@@ -105,6 +106,11 @@
             name: 'Home',
             component: home,
             
+        },
+        {
+            path: '/admin',
+            name: 'Admin',
+            component: AdminPanel
         },
         {
             path: '/users',
@@ -282,15 +288,28 @@
                     Página Inicial
                 </router-link>
             </li>
-            <li class="nav-item">
-                <router-link class="nav-link" :to="{name: 'UsersList'}" v-if="user.is_superuser">
-                    Informações Usuários
-                </router-link>
+            <div v-if="user.is_superuser">
+                <li class="nav-item">
+                    <router-link class="nav-link" :to="{name: 'UsersList'}" >
+                        Informações Usuários
+                    </router-link>
+                </li>
 
-                <router-link class="nav-link" to="/fenotipo/" v-if="!user.is_superuser">
-                    Fenótipo
-                </router-link>
-            </li>
+                <li class="nav-item">
+                    <router-link class="nav-link" to="/admin">
+                        Painel Administrador
+                    </router-link>
+                </li>
+            </div>
+            <div v-if="!user.is_superuser">
+                <li class="nav-item">
+                    <router-link class="nav-link" to="/fenotipo/" >
+                        Fenótipo
+                    </router-link>
+                </li>
+            </div>
+
+
             <li class="nav-item mt-auto">
                 <a href="#" class="nav-link" onclick="session.logout()">
                     <span class="nav-link-icon d-md-none d-lg-inline-block text-white">
@@ -467,9 +486,14 @@
                 <div class="card h-100">
                     <div class="card-body card-body-scrollable card-body-scrollable-shadow">
                         <div class="divide-y">
-                            <div class="ancestry-list" v-for="region in ancestry_data">
-                                <a href="#" class="badge" :style="{backgroundColor: region.color}"></a>
-                                <span class="mx-1">{{region.name}}</span>
+                            <div class="ancestry-list row" v-for="region in ancestry_data">
+                                <div class="col-10">
+                                    <a href="#" class="badge" :style="{backgroundColor: region.color}"></a>
+                                    <span style="color: #444" class="mx-1 strong">{{region.name}}</span>
+                                </div>
+                                <div class="col text-end">
+                                    <span class="strong text-azure">{{percent(region.prediction)}}</span>    
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -477,5 +501,80 @@
                 
             </div>
         </div>
+    </div>
+</script>
+
+
+<script type="text/x-template" id="admin-panel">
+    <div class="col-10">
+        <form id="create-user-form" action="" method="post">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nome</label>
+                        <input type="text" name="name" class="form-control" placeholder="Nome">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">E-mail</label>
+                        <input type="text" name="email" class="form-control" placeholder="E-mail">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amostra</label>
+                        <input type="text" name="sample" class="form-control" placeholder="Ex: HC000...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Senha</label>
+                        <input type="password" name="password" class="form-control" placeholder="Senha">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Data de Nascimento</label>
+                        <input type="date" name="date_of_birth" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-label">Sexo</div>
+                        <div>
+                          <label class="form-check form-check-inline">
+                            <input name="sex" class="form-check-input" type="radio" value="Male" checked>
+                            <span class="form-check-label">Masculino</span>
+                          </label>
+                          <label class="form-check form-check-inline">
+                            <input name="sex" class="form-check-input" value="Female" type="radio">
+                            <span class="form-check-label">Feminino</span>
+                          </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Altura</label>
+                        <input type="number" name="height" class="form-control" placeholder="Ex: 180...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Peso</label>
+                        <input type="number" name="weight" class="form-control" step="0.1" placeholder="Ex: 78.3...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tamanho do Calçado</label>
+                        <input type="number" name="shoe_size" class="form-control" placeholder="Ex: 41...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nacionalidade</label>
+                        <input type="text" name="nationality" class="form-control" placeholder="Ex: Brasileiro...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-check form-switch">
+                            <input class="form-check-input" name="is_superuser" type="checkbox">
+                            <span class="form-check-label">Super Usuário</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <div class="d-flex">
+                        <button class="btn btn-primary ms-auto" type="submit">
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </script>
