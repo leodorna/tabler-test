@@ -27,6 +27,12 @@
         cursor: pointer;
     }
     
+
+    .user-button-admin:hover{
+        color: #4299e1;
+        cursor: pointer;
+    }
+
 </style>
 
 <html>
@@ -508,6 +514,44 @@
     </div>
 </script>
 
+    
+
+<script type="text/x-template" id="admin-panel">
+    <div class="col-10">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            Painel de Usuários
+                        </h2>
+                    </div>
+                    <div class="position-relative">
+                        <input class="form-control" style="border-radius: 0;" type="text" v-model="query" placeholder="Pesquise o nome do usuário...">
+                    </div>
+                    <div id="users-section-admin" class="card-body card-body-scrollable" style="height: 400px" v-on:scroll="scrolled()">
+                        <div class="divide-y">
+                            <div class="row user-button-admin" v-for="user in filterUsers()">
+                                <div class="col-lg-6">
+                                    <span>{{user.name}}</span>
+                                </div>
+                                <div class="col-lg-6 text-end">
+                                    <span class="edit-user-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" /><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" /><line x1="16" y1="5" x2="19" y2="8" /></svg>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer w-100 text-end">
+                        <a href="#" class="btn btn-green" data-toggle="modal" data-target="#create-user-modal" v-on:click="success = null">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                            Criar Usuário
+                        </a>
+                    </div>
+                </div>  
+            </div>
+        </div>
 
 <div class="modal modal-blur fade" id="create-user-modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -547,7 +591,6 @@
                             
                         </div>
                     </div>
-                
                     <div class="row">
                         <div class="col-lg-6">
             
@@ -564,8 +607,6 @@
                         </div>
                         
                     </div>
-            
-        
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3 ">
@@ -592,7 +633,6 @@
                         </div>
                         
                     </div>
-        
                     <div class="row">
                         <div class="col-lg-4">
                             <div class="mb-3">
@@ -613,61 +653,27 @@
                             </div>
                         </div>
                     </div>
+                    <div v-if="success === true" class="alert alert-success mb-0" role="alert">
+                        <h4 class="alert-title">Feito!</h4>
+                        <div class="text-muted">O usuário foi inserido no banco de dados com sucesso.</div>
+                    </div>
+                    <div v-if="success === false" class="alert alert-danger mb-0" role="alert">
+                        <h4 class="alert-title">Opa&hellip;</h4>
+                        <div class="text-muted">Erro no formulário.</div>
+                    </div>
                 
             </div>
             <div class="modal-footer">
             <a href="#" class="btn btn-link link-secondary" data-dismiss="modal">
                 Cancel
                 </a>
-            <button class="btn btn-primary ms-auto" data-dismiss="modal" type="submit">
+            <button class="btn btn-primary ms-auto" type="submit">
                 Salvar
             </button>
             </div>
             </form>
         </div>
         </div>
-</div>
-    
-
-<script type="text/x-template" id="admin-panel">
-    <div class="col-10">
-        <div class="row">
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>
-                            Painel de Usuários
-                        </h2>
-                    </div>
-                    <div class="position-relative">
-                        <input class="form-control" style="border-radius: 0;" type="text" v-model="query" placeholder="Pesquise o nome do usuário...">
-                    </div>
-                    <div id="users-section-admin" class="card-body card-body-scrollable" style="height: 400px" v-on:scroll="scrolled()">
-                        <div class="divide-y">
-                            <div class="row" v-for="user in filterUsers()">
-                                <div class="col-lg-6">
-                                    <span>{{user.name}}</span>
-                                </div>
-                                <div class="col-lg-6 text-end">
-                                    <span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" /><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" /><line x1="16" y1="5" x2="19" y2="8" /></svg>
-                                    </span>
-                                    <span class="text-red">
-                                    	<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="4" y1="7" x2="20" y2="7" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer w-100 text-end">
-                        <a href="#" class="btn btn-green" data-toggle="modal" data-target="#create-user-modal">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-
-                            Criar Usuário
-                        </a>
-                    </div>
-                </div>  
-            </div>
         </div>
     </div>
 </script> 

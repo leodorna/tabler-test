@@ -4,7 +4,7 @@ const AdminPanel = Vue.component(
         props: [],
         data: function(){
             return {
-                success: false,
+                success: null,
                 users: [],
                 query: '',
                 skip: 0, // parametro pra por um offset no request de usuarios
@@ -33,16 +33,19 @@ const AdminPanel = Vue.component(
 
                 const dataToSend = Object.fromEntries(data.entries());
 
-                this.success = true
                 const response = await session.postRequest('users/', dataToSend)
 
                 if(response.ok){
+                    this.success = true
                     let data = await response.json()
-                     console.log(data)
+                    this.users.push(data)
+                    this.cleanForm()
                 } else {
+                    this.success = false
                     let data = await response.json()
-                    console.log(data)
+
                 }
+
 
             },
             getUsers: async function(){
@@ -53,11 +56,14 @@ const AdminPanel = Vue.component(
                 
                 this.increaseCountUsers()
                 
-                if(users.data.length == 0) this.allUsersFetched = true
+                if(users.data.length == 0){
+                    this.skip = this.users.length
+                    this.allUsersFetched = true
+                }
             },
             scrolled: async function(){
                 let div = document.querySelector("#users-section-admin" )
-                if (div.offsetHeight + div.scrollTop >= div.scrollHeight) {  
+                if (div.offsetHeight + div.scrollTop >= div.scrollHeight && !this.allUsersFetched) {  
                     await this.getUsers()
                 }  
             },
@@ -71,6 +77,9 @@ const AdminPanel = Vue.component(
                         return d.name.toLowerCase().match(regexQuery)
                     } 
                 }) 
+            },
+            cleanForm: function(){
+                document.querySelector("#create-user-form").reset()
             }
         }
     }
