@@ -81,6 +81,7 @@
 <script src="classes/Token.js"></script>
 <script src="classes/Session.js"></script>
 <script src="classes/Views.js"></script>
+<script src="classes/FormUser.js"></script>
 
 <!-- Vue Components -->
 <script src="vue_components_js/navbar.js"></script>
@@ -531,7 +532,7 @@
                     </div>
                     <div id="users-section-admin" class="card-body card-body-scrollable" style="height: 400px" v-on:scroll="scrolled()">
                         <div class="divide-y">
-                            <div class="row user-button-admin" v-for="user in filterUsers()">
+                            <div class="row user-button-admin" data-toggle="modal" data-target="#create-user-modal" v-for="user in filterUsers()" v-on:click="editUser(user)">
                                 <div class="col-lg-6">
                                     <span>{{user.name}}</span>
                                 </div>
@@ -568,12 +569,12 @@
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label">Nome</label>
-                                <input type="text" name="name" class="form-control" placeholder="Nome">
+                                <input type="text" v-model="formData.name" name="name" class="form-control" placeholder="Nome">
                             </div>
             
                             <div class="mb-3">
                                 <label class="form-label">Senha</label>
-                                <input type="password" name="password" class="form-control" placeholder="Senha">
+                                <input type="password" v-model="formData.password" name="password" class="form-control" placeholder="Senha">
                             </div>
             
                         </div>
@@ -581,12 +582,12 @@
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label">E-mail</label>
-                                <input type="text" name="email" class="form-control" placeholder="E-mail">
+                                <input type="text" v-model="formData.email" name="email" class="form-control" placeholder="E-mail">
                             </div>
             
                             <div class="mb-3">
                                 <label class="form-label">Amostra</label>
-                                <input type="text" name="sample" class="form-control" placeholder="Ex: HC000...">
+                                <input type="text" v-model="formData.sample" name="sample" class="form-control" placeholder="Ex: HC000...">
                             </div>
                             
                         </div>
@@ -596,13 +597,13 @@
             
                             <div class="mb-3">
                                 <label class="form-label">Data de Nascimento</label>
-                                <input type="date" name="date_of_birth" class="form-control">
+                                <input type="date" v-model="formData.date_of_birth" name="date_of_birth" class="form-control">
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label">Nacionalidade</label>
-                                <input type="text" name="nationality" class="form-control" placeholder="Ex: Brasileiro...">
+                                <input type="text" v-model="formData.nationality" name="nationality" class="form-control" placeholder="Ex: Brasileiro...">
                             </div>    
                         </div>
                         
@@ -613,11 +614,11 @@
                                 <div class="form-label">Sexo</div>
                                 <div>
                                     <label class="form-check form-check-inline">
-                                    <input name="sex" class="form-check-input" type="radio" value="Male" checked>
+                                    <input v-model="formData.sex" name="sex" class="form-check-input" type="radio" value="Male" checked>
                                     <span class="form-check-label">Masculino</span>
                                     </label>
                                     <label class="form-check form-check-inline">
-                                    <input name="sex" class="form-check-input" value="Female" type="radio">
+                                    <input v-model="formData.sex" name="sex" class="form-check-input" value="Female" type="radio">
                                     <span class="form-check-label">Feminino</span>
                                     </label>
                                 </div>
@@ -626,7 +627,7 @@
                         <div class="col-lg-6 d-flex align-items-center">
                             <div class="pt-2">
                                 <label class="form-check form-switch">
-                                    <input class="form-check-input" name="is_superuser" type="checkbox">
+                                    <input class="form-check-input" v-model="formData.is_superuser" name="is_superuser" type="checkbox">
                                     <span class="form-check-label strong">Super Usuário</span>
                                 </label>
                             </div>
@@ -637,19 +638,19 @@
                         <div class="col-lg-4">
                             <div class="mb-3">
                                 <label class="form-label">Altura</label>
-                                <input type="number" name="height" class="form-control" placeholder="Ex: 180...">
+                                <input type="number" v-model="formData.height" name="height" class="form-control" placeholder="Ex: 180...">
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="mb-3">
                                 <label class="form-label">Peso</label>
-                                <input type="number" name="weight" class="form-control" step="0.1" placeholder="Ex: 78.3...">
+                                <input type="number" v-model="formData.weight" name="weight" class="form-control" step="0.1" placeholder="Ex: 78.3...">
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="mb-3">
                                 <label class="form-label">Tamanho do Calçado</label>
-                                <input type="number" name="shoe_size" class="form-control" placeholder="Ex: 41...">
+                                <input type="number" v-model="formData.shoe_size" name="shoe_size" class="form-control" placeholder="Ex: 41...">
                             </div>
                         </div>
                     </div>

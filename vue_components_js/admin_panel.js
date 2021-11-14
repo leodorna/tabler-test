@@ -8,12 +8,28 @@ const AdminPanel = Vue.component(
                 users: [],
                 query: '',
                 skip: 0, // parametro pra por um offset no request de usuarios
-                allUsersFetched: false // parametro para esconder o botão de carregar novos usuários quando não encontra mais usuarios no banco
+                allUsersFetched: false, // parametro para esconder o botão de carregar novos usuários quando não encontra mais usuarios no banco
+                formData : {
+                    'name': null,
+                    'email': null,
+                    'password': null,
+                    'sample': null,
+                    'date_of_birth': null,
+                    'is_superuser': false,
+                    'sex': null,
+                    'weight': null,
+                    'height': null,
+                    'shoe_size': null,
+                    'nationality': null
+                }
             }
         },
         mounted: async function() {
             const form = document.querySelector('#create-user-form');
             form.addEventListener('submit', this.createUser);
+            
+            //form_object = new FormData(form)
+            //this.formData =  Object.fromEntries(form_object.entries())
 
             await this.getUsers()
         },
@@ -30,7 +46,7 @@ const AdminPanel = Vue.component(
                 }
 
                 data.set('id', 999)
-
+                console.log(this.formData)
                 const dataToSend = Object.fromEntries(data.entries());
 
                 const response = await session.postRequest('users/', dataToSend)
@@ -46,6 +62,20 @@ const AdminPanel = Vue.component(
 
                 }
 
+
+            },
+            editUser: async function(user){
+                let divForm = document.querySelector("#create-user-form")
+                
+                divForm.reset()
+                
+                Object.keys(this.formData).forEach(key => {
+                    
+                    if(key in user){
+                        this.formData[key] = user[key]
+                    }
+                })
+                
 
             },
             getUsers: async function(){
