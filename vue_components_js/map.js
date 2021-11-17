@@ -59,6 +59,7 @@ const MapComponent = Vue.component("map-view", {
             this.ancestry_data.slice().reverse().forEach( d => {
                 let coords = turf.polygonSmooth(turf.polygon(d.region), {iterations: 8})
                 var polyline = L.geoJson(coords, {color: d.color}).addTo(this.map);
+                polyline.bindTooltip(d.name)
               })
         },
         percent: function(number){
