@@ -27,7 +27,10 @@
         cursor: pointer;
     }
     
-
+    .view-badge:hover{
+        background-color: #206bc4;
+        cursor: pointer;
+    }
     .user-button-admin:hover{
         color: #4299e1;
         cursor: pointer;
@@ -564,7 +567,7 @@
                             <div class="row" v-for="category in categories">
                                     <div class="col-12">
                                         <h2 class="card-title">{{category.name}}</h2>
-                                        <span class="badge bg-azure mx-md-1" v-for="v in category.views">{{v.title}}</span>
+                                        <span class="badge bg-azure mx-md-1 view-badge" v-for="v in category.views">{{v.title}}</span>
                                     </div>
                             </div>
                         </div>
