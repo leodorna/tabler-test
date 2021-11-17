@@ -28,8 +28,6 @@ const ListCategories = Vue.component("ListCategories", {
                 views: viewsJson
             })
         }          
-
-        console.log(this.targetUser)
     },
     methods: {
         setView: function(category){

@@ -1,3 +1,10 @@
+optionsGeoJson = {
+    fillOpacity: 0.4,
+    fillOpacityHover: 0.1,
+    strokeOpacity: 0.6,
+    strokeOpacityHover: 0.3
+}
+
 const MapComponent = Vue.component("map-view", {
     props: [],
     template: "#map-template",
@@ -44,23 +51,46 @@ const MapComponent = Vue.component("map-view", {
                 }).addTo(map);
             
             // Add a svg layer to the map
-            L.svg({clickable: true}).addTo(map);
+            svg = L.svg({clickable: true}).addTo(map);
             
 
             const overlay = d3.select(map.getPanes().overlayPane)
-            let svg = overlay.select('svg').attr("pointer-events", "auto")    
-
+            overlay.select('svg').attr("pointer-events", "auto")    
             this.map = map
             this.svg = svg
+
+            
 
         },
         fillMap: function(){
             // iterate over the reverse order so the greater values of prediction stay on the top of the map
             this.ancestry_data.slice().reverse().forEach( d => {
                 let coords = turf.polygonSmooth(turf.polygon(d.region), {iterations: 8})
-                var polyline = L.geoJson(coords, {color: d.color}).addTo(this.map);
+                
+                var polyline = L.geoJson(coords, 
+                                            {
+                                                color: d.color, 
+                                                fillOpacity:    optionsGeoJson.fillOpacity, 
+                                                strokeOpacity:  optionsGeoJson.strokeOpacity
+                                            }
+                                        ).addTo(this.map);
+
                 polyline.bindTooltip(d.name)
               })
+
+            d3.selectAll('path')
+                .on('mouseover', function(e){
+                        d3.selectAll('path')
+                            .style('fill-opacity', optionsGeoJson.fillOpacityHover)
+                            .style('stroke-opacity', optionsGeoJson.strokeOpacityHover)
+                        d3.select(this).style('fill-opacity', optionsGeoJson.fillOpacity)
+                        d3.select(this).style('stroke-opacity', optionsGeoJson.strokeOpacity)
+                })
+                .on('mouseout', function(e){
+                    d3.selectAll('path')
+                            .style('fill-opacity', optionsGeoJson.fillOpacity)
+                            .style('stroke-opacity', optionsGeoJson.strokeOpacity)
+                })
         },
         percent: function(number){
             return Math.ceil(100*number)+'%'
