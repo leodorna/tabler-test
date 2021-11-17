@@ -6,6 +6,7 @@ const AdminPanel = Vue.component(
             return {
                 success: null,
                 users: [],
+                categories: [],
                 query: '',
                 skip: 0, // parametro pra por um offset no request de usuarios
                 allUsersFetched: false, // parametro para esconder o botão de carregar novos usuários quando não encontra mais usuarios no banco
@@ -30,7 +31,7 @@ const AdminPanel = Vue.component(
             
             //form_object = new FormData(form)
             //this.formData =  Object.fromEntries(form_object.entries())
-
+            await this.getCategories()
             await this.getUsers()
         },
         methods: {
@@ -90,6 +91,23 @@ const AdminPanel = Vue.component(
                     this.skip = this.users.length
                     this.allUsersFetched = true
                 }
+            },
+            getCategories: async function(){
+                const categoriesResponse = await session.getRequest('categories/')
+                const categoriesJson = await categoriesResponse.json()
+
+                for(let category of categoriesJson.data){
+                    let viewsResponse = await session.getRequest('views/category/'+category.id)
+                    let viewsJson = await viewsResponse.json()
+                    
+                    this.categories.push({
+                        id: category.id,
+                        name: category.name,
+                        views: viewsJson
+                    })
+                }        
+
+
             },
             scrolled: async function(){
                 let div = document.querySelector("#users-section-admin" )

@@ -552,129 +552,150 @@
                     </div>
                 </div>  
             </div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            Painel de Categorias
+                        </h2>
+                    </div>
+                    <div class="card-body card-body-scrollable" style="height: 400px">
+                        <div class="divide-y">
+                            <div class="row" v-for="category in categories">
+                                    <div class="col-12">
+                                        <h2 class="card-title">{{category.name}}</h2>
+                                        <span class="badge bg-azure mx-md-1" v-for="v in category.views">{{v.title}}</span>
+                                    </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
         </div>
 
-<div class="modal modal-blur fade" id="create-user-modal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal modal-blur fade" id="create-user-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
 
-        <div class="modal-content">
+                <div class="modal-content">
 
-            <form id="create-user-form" action="" method="post"> 
-            <div class="modal-header">
-                <h5 class="modal-title">Criar Usuário</h5>
-             <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body"> 
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">Nome</label>
-                                <input type="text" v-model="formData.name" name="name" class="form-control" placeholder="Nome">
-                            </div>
-            
-                            <div class="mb-3">
-                                <label class="form-label">Senha</label>
-                                <input type="password" v-model="formData.password" name="password" class="form-control" placeholder="Senha">
-                            </div>
-            
-                        </div>
-                        
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">E-mail</label>
-                                <input type="text" v-model="formData.email" name="email" class="form-control" placeholder="E-mail">
-                            </div>
-            
-                            <div class="mb-3">
-                                <label class="form-label">Amostra</label>
-                                <input type="text" v-model="formData.sample" name="sample" class="form-control" placeholder="Ex: HC000...">
-                            </div>
-                            
-                        </div>
+                    <form id="create-user-form" action="" method="post"> 
+                    <div class="modal-header">
+                        <h5 class="modal-title">Criar Usuário</h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-            
-                            <div class="mb-3">
-                                <label class="form-label">Data de Nascimento</label>
-                                <input type="date" v-model="formData.date_of_birth" name="date_of_birth" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">Nacionalidade</label>
-                                <input type="text" v-model="formData.nationality" name="nationality" class="form-control" placeholder="Ex: Brasileiro...">
-                            </div>    
-                        </div>
-                        
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="mb-3 ">
-                                <div class="form-label">Sexo</div>
-                                <div>
-                                    <label class="form-check form-check-inline">
-                                    <input v-model="formData.sex" name="sex" class="form-check-input" type="radio" value="Male" checked>
-                                    <span class="form-check-label">Masculino</span>
-                                    </label>
-                                    <label class="form-check form-check-inline">
-                                    <input v-model="formData.sex" name="sex" class="form-check-input" value="Female" type="radio">
-                                    <span class="form-check-label">Feminino</span>
-                                    </label>
+                    <div class="modal-body"> 
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nome</label>
+                                        <input type="text" v-model="formData.name" name="name" class="form-control" placeholder="Nome">
+                                    </div>
+                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Senha</label>
+                                        <input type="password" v-model="formData.password" name="password" class="form-control" placeholder="Senha">
+                                    </div>
+                    
+                                </div>
+                                
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">E-mail</label>
+                                        <input type="text" v-model="formData.email" name="email" class="form-control" placeholder="E-mail">
+                                    </div>
+                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Amostra</label>
+                                        <input type="text" v-model="formData.sample" name="sample" class="form-control" placeholder="Ex: HC000...">
+                                    </div>
+                                    
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-6 d-flex align-items-center">
-                            <div class="pt-2">
-                                <label class="form-check form-switch">
-                                    <input class="form-check-input" v-model="formData.is_superuser" name="is_superuser" type="checkbox">
-                                    <span class="form-check-label strong">Super Usuário</span>
-                                </label>
+                            <div class="row">
+                                <div class="col-lg-6">
+                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Data de Nascimento</label>
+                                        <input type="date" v-model="formData.date_of_birth" name="date_of_birth" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nacionalidade</label>
+                                        <input type="text" v-model="formData.nationality" name="nationality" class="form-control" placeholder="Ex: Brasileiro...">
+                                    </div>    
+                                </div>
+                                
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3 ">
+                                        <div class="form-label">Sexo</div>
+                                        <div>
+                                            <label class="form-check form-check-inline">
+                                            <input v-model="formData.sex" name="sex" class="form-check-input" type="radio" value="Male" checked>
+                                            <span class="form-check-label">Masculino</span>
+                                            </label>
+                                            <label class="form-check form-check-inline">
+                                            <input v-model="formData.sex" name="sex" class="form-check-input" value="Female" type="radio">
+                                            <span class="form-check-label">Feminino</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 d-flex align-items-center">
+                                    <div class="pt-2">
+                                        <label class="form-check form-switch">
+                                            <input class="form-check-input" v-model="formData.is_superuser" name="is_superuser" type="checkbox">
+                                            <span class="form-check-label strong">Super Usuário</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Altura</label>
+                                        <input type="number" v-model="formData.height" name="height" class="form-control" placeholder="Ex: 180...">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Peso</label>
+                                        <input type="number" v-model="formData.weight" name="weight" class="form-control" step="0.1" placeholder="Ex: 78.3...">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tamanho do Calçado</label>
+                                        <input type="number" v-model="formData.shoe_size" name="shoe_size" class="form-control" placeholder="Ex: 41...">
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="success === true" class="alert alert-success mb-0" role="alert">
+                                <h4 class="alert-title">Feito!</h4>
+                                <div class="text-muted">O usuário foi inserido no banco de dados com sucesso.</div>
+                            </div>
+                            <div v-if="success === false" class="alert alert-danger mb-0" role="alert">
+                                <h4 class="alert-title">Opa&hellip;</h4>
+                                <div class="text-muted">Erro no formulário.</div>
+                            </div>
                         
                     </div>
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">Altura</label>
-                                <input type="number" v-model="formData.height" name="height" class="form-control" placeholder="Ex: 180...">
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">Peso</label>
-                                <input type="number" v-model="formData.weight" name="weight" class="form-control" step="0.1" placeholder="Ex: 78.3...">
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label class="form-label">Tamanho do Calçado</label>
-                                <input type="number" v-model="formData.shoe_size" name="shoe_size" class="form-control" placeholder="Ex: 41...">
-                            </div>
-                        </div>
+                    <div class="modal-footer">
+                    <a href="#" class="btn btn-link link-secondary" data-dismiss="modal">
+                        Cancel
+                        </a>
+                    <button class="btn btn-primary ms-auto" type="submit">
+                        Salvar
+                    </button>
                     </div>
-                    <div v-if="success === true" class="alert alert-success mb-0" role="alert">
-                        <h4 class="alert-title">Feito!</h4>
-                        <div class="text-muted">O usuário foi inserido no banco de dados com sucesso.</div>
-                    </div>
-                    <div v-if="success === false" class="alert alert-danger mb-0" role="alert">
-                        <h4 class="alert-title">Opa&hellip;</h4>
-                        <div class="text-muted">Erro no formulário.</div>
-                    </div>
-                
+                    </form>
+                </div>
             </div>
-            <div class="modal-footer">
-            <a href="#" class="btn btn-link link-secondary" data-dismiss="modal">
-                Cancel
-                </a>
-            <button class="btn btn-primary ms-auto" type="submit">
-                Salvar
-            </button>
-            </div>
-            </form>
-        </div>
-        </div>
         </div>
     </div>
 </script> 
