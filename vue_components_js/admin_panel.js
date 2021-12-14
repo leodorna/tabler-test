@@ -35,8 +35,6 @@ const AdminPanel = Vue.component(
             }
         },
         mounted: async function() {
-            const form = document.querySelector('#create-user-form');
-            form.addEventListener('submit', this.createUser);
             
             //form_object = new FormData(form)
             //this.formData =  Object.fromEntries(form_object.entries())
@@ -111,16 +109,16 @@ const AdminPanel = Vue.component(
                 if(this.mode === this.EDIT_USER){
                     const request = await session.patchRequest('users/update/'+this.targetUser.id, this.formData)
                     
-                    if(response.ok){
+                    if(request.ok){
                         this.success = true
                     } else {
                         this.success = false
                     }
                 } 
-                else {
+                else if(this.mode === this.CREATE_USER){
                     const request = await session.postRequest('users/', this.formData)
 
-                    if(response.ok){
+                    if(request.ok){
                         this.success = true
                         let data = await request.json()
                         this.users.push(data)
@@ -129,6 +127,8 @@ const AdminPanel = Vue.component(
                         this.success = false    
                     }
                 }
+
+                console.log(await request.json())
             },
             findUsers: async function(query){
                 const request = await session.getRequest('users/?name='+query)
