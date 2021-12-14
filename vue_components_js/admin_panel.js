@@ -44,38 +44,42 @@ const AdminPanel = Vue.component(
             await this.getUsers()
         },
         methods: {
-            createUser: async function(event){
-                event.preventDefault();
-                const data = new FormData(event.target);
+            createUser: function(){
+                // event.preventDefault();
+                // const data = new FormData(event.target);
                 
-                //set true/false value to the superuser checkbox 
-                if(data.get('is_superuser')){
-                    data.set('is_superuser', false)
-                } else {
-                    data.set('is_superuser', true)
-                }
+                // //set true/false value to the superuser checkbox 
+                // if(data.get('is_superuser')){
+                //     data.set('is_superuser', false)
+                // } else {
+                //     data.set('is_superuser', true)
+                // }
                 
-                const dataToSend = Object.fromEntries(data.entries());
+                // const dataToSend = Object.fromEntries(data.entries());
 
-                const response = await session.postRequest('users/', dataToSend)
+                // const response = await session.postRequest('users/', dataToSend)
 
-                if(response.ok){
-                    this.success = true
-                    let data = await response.json()
-                    this.users.push(data)
-                    this.cleanForm()
-                } else {
-                    this.success = false
-                    let data = await response.json()
+                // if(response.ok){
+                //     this.success = true
+                //     let data = await response.json()
+                //     this.users.push(data)
+                //     this.cleanForm()
+                // } else {
+                //     this.success = false
+                //     let data = await response.json()
 
-                }
+                // }
+                this.success = null
+                this.mode = this.CREATE_USER
 
+                this.cleanForm()
 
             },
             editUser: function(user){
                 // let divForm = document.querySelector("#create-user-form")
                 
                 // divForm.reset()
+                this.success = null
                 this.mode = this.EDIT_USER
 
                 this.cleanForm()

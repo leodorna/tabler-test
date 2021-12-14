@@ -598,7 +598,7 @@
                         </div>
                     </div>
                     <div class="card-footer w-100 text-end">
-                        <a href="#" class="btn btn-green" data-toggle="modal" data-target="#create-user-modal" v-on:click="success = null">
+                        <a href="#" class="btn btn-green" data-toggle="modal" data-target="#create-user-modal" v-on:click="createUser()">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                             Criar Usuário
                         </a>
@@ -635,7 +635,7 @@
 
                     <form id="create-user-form" action="" method="post"> 
                     <div class="modal-header">
-                        <h5 class="modal-title" v-if="mode === null">Criar Usuário</h5>
+                        <h5 class="modal-title" v-if="mode === CREATE_USER">Criar Usuário</h5>
                         <h5 class="modal-title" v-if="mode === EDIT_USER">Editar Usuário</h5>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -657,11 +657,13 @@
                                 <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label class="form-label">E-mail</label>
-                                        <input type="text" v-model="formData.email" name="email" class="form-control" placeholder="E-mail" disabled>
+                                        <input v-if="mode === EDIT_USER" type="text" v-model="formData.email" name="email" class="form-control" placeholder="E-mail" disabled>
+                                        <input v-if="mode === CREATE_USER" type="text" v-model="formData.email" name="email" class="form-control" placeholder="E-mail">
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Amostra</label>
-                                        <input type="text" v-model="formData.sample" name="sample" class="form-control" placeholder="Ex: HC000..." disabled>
+                                        <input v-if="mode === CREATE_USER" type="text" v-model="formData.sample" name="sample" class="form-control" placeholder="Ex: HC000...">
+                                        <input v-if="mode === EDIT_USER" type="text" v-model="formData.sample" name="sample" class="form-control" placeholder="Ex: HC000..." disabled>
                                     </div>
                                 </div>
                             </div>
@@ -750,7 +752,7 @@
                         <a href="#" class="btn btn-link link-secondary" data-dismiss="modal">
                             Cancel
                         </a>
-                        <button v-if="mode === null" class="btn btn-primary ms-auto" type="submit">
+                        <button v-if="mode === CREATE_USER" class="btn btn-primary ms-auto" type="submit">
                             Salvar
                         </button>
                         <button v-if="mode === EDIT_USER" class="btn btn-primary ms-auto">
