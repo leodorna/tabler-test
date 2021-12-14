@@ -36,7 +36,7 @@ class Session{
     async getRequest(relativePath){
 
         
-        const url = this.baseUrl + relativePath.replace('./', ''); // absolut path
+        const url = this.baseUrl + relativePath.replace('./', ''); 
 
         const response = await fetch(url, {
             method: 'GET', 
@@ -44,6 +44,22 @@ class Session{
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             //credentials: 'same-origin', // include, *same-origin, omit
             headers: this.getRequestHeader()
+        });
+
+        return response;
+    }
+
+    async patchRequest(relativePath, body = ''){
+
+        const url = this.baseUrl + relativePath.replace('./', ''); 
+
+        const response = await fetch(url, {
+            method: 'PATCH', 
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            //credentials: 'same-origin', // include, *same-origin, omit
+            headers: this.getRequestHeader(),
+            body: JSON.stringify(body) 
         });
 
         return response;

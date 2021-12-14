@@ -1,13 +1,18 @@
+
 const AdminPanel = Vue.component(
     "admin-panel", {
         template: "#admin-panel",
         props: [],
+        components: {
+            'nacionalidade': SelectCountry
+        },
         data: function(){
             return {
                 success: null,
                 users: [],
                 categories: [],
                 query: '',
+                targetUser: {},
                 skip: 0, // parametro pra por um offset no request de usuarios
                 allUsersFetched: false, // parametro para esconder o botão de carregar novos usuários quando não encontra mais usuarios no banco
                 formData : {
@@ -16,13 +21,17 @@ const AdminPanel = Vue.component(
                     'password': null,
                     'sample': null,
                     'date_of_birth': null,
+                    'is_active': false,
                     'is_superuser': false,
                     'sex': null,
                     'weight': null,
                     'height': null,
                     'shoe_size': null,
                     'nationality': null
-                }
+                },
+                CREATE_USER: true,
+                EDIT_USER : false,
+                mode: null
             }
         },
         mounted: async function() {
@@ -45,9 +54,7 @@ const AdminPanel = Vue.component(
                 } else {
                     data.set('is_superuser', true)
                 }
-
-                data.set('id', 999)
-                console.log(this.formData)
+                
                 const dataToSend = Object.fromEntries(data.entries());
 
                 const response = await session.postRequest('users/', dataToSend)
@@ -65,18 +72,22 @@ const AdminPanel = Vue.component(
 
 
             },
-            editUser: async function(user){
-                let divForm = document.querySelector("#create-user-form")
+            editUser: function(user){
+                // let divForm = document.querySelector("#create-user-form")
                 
-                divForm.reset()
-                
+                // divForm.reset()
+                this.mode = this.EDIT_USER
+
+                this.cleanForm()
+
+                this.targetUser = user
+
                 Object.keys(this.formData).forEach(key => {
-                    
                     if(key in user){
                         this.formData[key] = user[key]
                     }
                 })
-                
+
 
             },
             getUsers: async function(){
@@ -91,6 +102,35 @@ const AdminPanel = Vue.component(
                     this.skip = this.users.length
                     this.allUsersFetched = true
                 }
+            },
+            saveUser: async function(){
+                if(this.mode === this.EDIT_USER){
+                    const request = await session.patchRequest('users/update/'+this.targetUser.id, this.formData)
+                    
+                    if(response.ok){
+                        this.success = true
+                    } else {
+                        this.success = false
+                    }
+                } 
+                else {
+                    const request = await session.postRequest('users/', this.formData)
+
+                    if(response.ok){
+                        this.success = true
+                        let data = await request.json()
+                        this.users.push(data)
+                        this.cleanForm()
+                    } else {
+                        this.success = false    
+                    }
+                }
+            },
+            findUsers: async function(query){
+                const request = await session.getRequest('users/?name='+query)
+                let users = await request.json()
+
+                return users
             },
             getCategories: async function(){
                 const categoriesResponse = await session.getRequest('categories/')
@@ -127,8 +167,23 @@ const AdminPanel = Vue.component(
                 }) 
             },
             cleanForm: function(){
-                document.querySelector("#create-user-form").reset()
+                // document.querySelector("#create-user-form").reset()
+                this.formData = {
+                    'name': null,
+                    'email': null,
+                    'password': null,
+                    'sample': null,
+                    'date_of_birth': null,
+                    'is_active': false,
+                    'is_superuser': false,
+                    'sex': null,
+                    'weight': null,
+                    'height': null,
+                    'shoe_size': null,
+                    'nationality': null
+                }
             }
+
         }
     }
 )
