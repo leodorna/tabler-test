@@ -40,6 +40,21 @@
         --tblr-avatar-size: 120px;
     }
 
+    .section-profile svg:hover{
+        color: green;
+    }
+
+    /* Remove arrows from number input */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    input[type=number] {
+        -moz-appearance:textfield; /* Firefox */
+    }
 </style>
 
 <html>
@@ -526,45 +541,142 @@
 </script>
 
 <script type="text/x-template" id="profile-template">
-    <div class="col-6">
-        <div class="card d-flex flex-column card-profile">
-            <div class="row row-0 flex-fill">
-                <div class="col-md-auto">
-                    <span class="avatar avatar-xl">{{initials}}</span>
-                </div>
-                <div class="col">
-                    <div class="card-body d-flex">
-                        <div class="col-12">
-                            <div class="row">
-                                <h1 class="card-title">{{user.name}}</h1>
+    <div class="col-10">
+        <div class="row row-deck row-cards">
+            <div class="card d-flex flex-column card-profile p-0">
+                <div class="row row-0 flex-fill mb-2">
+                    <div class="col-md-auto">
+                        <span class="avatar avatar-xl">{{initials}}</span>
+                    </div>
+                    <div class="col">
+                        <div class="card-body d-flex">
+                            <div class="col-12">
+                                <div class="row">
+                                    <h1 class="card-title">{{user.name}}</h1>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-auto"> 
+                                        <div class="row">
+                                            <span class="text-azure strong">Amostra:</span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="text-azure strong">E-mail:</span>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <span>{{user.sample}}</span>
+                                        </div>
+                                        <div class="row">
+                                            <span>{{user.email}}</span>
+                                        </div>
+                                    </div>
+                                </div>    
                             </div>
-                            <div class="row">
-                                <div class="col-md-auto"> 
-                                    <div class="row">
-                                        <span class="text-azure strong">Amostra:</span>
-                                    </div>
-                                    <div class="row">
-                                        <span class="text-azure strong">E-mail:</span>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="row">
-                                        <span>{{user.sample}}</span>
-                                    </div>
-                                    <div class="row">
-                                        <span>{{user.email}}</span>
-                                    </div>
-                                </div>
-                            </div>    
+                            
                         </div>
-                        
                     </div>
                 </div>
+                <div class="row row-0 flex-fill">
+                    <ul class="nav nav-tabs" data-bs-toggle="tabs">
+                        <li class="nav-item">
+                          <a href="#tabs-home-ex1" class="nav-link active" data-bs-toggle="tab">Feed</a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="#tabs-profile-ex1" class="nav-link" data-bs-toggle="tab">Perfil</a>
+                        </li>
+                      </ul>
+                </div>
             </div>
-            <div class="row row-0 flex-fill">
-
+            <div class="card d-flex flex-column card-profile p-0 tab-content">
+                <div class="tab-pane active show card-body" id="tabs-home-ex1">
+                    <div class="col-12">
+                        <div class="row">
+                            <div>
+                                <h2 v-if="user.sex == 'Male'">Bem-vindo, {{user.name}}</h2>
+                                <h2 v-if="user.sex == 'Female'">Bem-vinda, {{user.name}}</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <span>Neste painel você encontra informações e atualizações sobre a pesquisa corrente.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane card-body" id="tabs-profile-ex1">
+                    <div class="col-12">
+                        <div class="section-profile row mb-3">
+                            <div class="col-4">
+                                 <div class="row">
+                                     <div class="col-10">
+                                        <h2>Dados de Contato</h2>
+                                     </div>
+                                     <div class="col-2">
+                                         <span v-on:click="edit_section">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" /><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" /><line x1="16" y1="5" x2="19" y2="8" /></svg>
+                                         </span>
+                                         
+                                     </div>
+                                     
+                                 </div>
+                                 <div class="row mb-3">
+                                    <label class="form-label">E-mail:</label>
+                                    <div> <input type="text" class="form-control form-control-flush" name="email" v-model="user.email" disabled> </div>
+                                    
+                                  </div>
+                                 <div class="row mb-3">
+                                    <label class="form-label">Telefone:</label>
+                                    <div><input type="tel" class="form-control form-control-flush" pattern="\([0-9]{2}\) [0-9]{4,6}-[0-9]{3,4}$" name="phone" placeholder="(99)99999-9999" disabled></div>
+                                  </div>
+                            </div>
+                        </div>
+                        <div class="section-profile row mb-3">
+                            <div class="col-4">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <h2>Dados Antropométricos</h2>
+                                     </div>
+                                     <div class="col-2">
+                                         <span v-on:click="edit_section">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" /><path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" /><line x1="16" y1="5" x2="19" y2="8" /></svg>
+                                         </span>
+                                         
+                                     </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="form-label">Altura:</label>
+                                    <div><input type="number" class="form-control form-control-flush" name="height" v-model="user.height" disabled></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="form-label">Peso:</label>
+                                    <div><input type="number" class="form-control form-control-flush" name="weight" v-model="user.weight" disabled></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="form-label">Tamanho do Calçado:</label>
+                                    <div><input type="number" class="form-control form-control-flush" name="shoe-size" v-model="user.shoe_size" disabled></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3" v-if="success != null">
+                            <div v-if="success === true" class="alert alert-success mb-0" role="alert">
+                                <h4 class="alert-title">Feito!</h4>
+                                <div class="text-muted">As alterações foram salvas com sucesso.</div>
+                            </div>
+                            <div v-if="success === false" class="alert alert-danger mb-0" role="alert">
+                                <h4 class="alert-title">Opa&hellip;</h4>
+                                <div class="text-muted">Erro no formulário.</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                 <a href="#" class="btn btn-light" v-on:click="save">Salvar Mudanças</a></div>
+                            </div>
+                        </div>
+                </div>
             </div>
         </div>
+        
     </div>
 </script>
 
@@ -581,7 +693,7 @@
                         </h2>
                     </div>
                     <div class="position-relative">
-                        <input class="form-control" style="border-radius: 0;" type="text" v-model="query" placeholder="Pesquise o nome do usuário...">
+                        <input class="form-control" id="pesquisa-nome" style="border-radius: 0;" type="text" v-model="query" placeholder="Pesquise o nome do usuário...">
                     </div>
                     <div id="users-section-admin" class="card-body card-body-scrollable" style="height: 400px" v-on:scroll="scrolled()">
                         <div class="divide-y">
