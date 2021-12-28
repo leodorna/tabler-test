@@ -78,7 +78,9 @@ const MapComponent = Vue.component("map-view", {
                 polyline.bindTooltip(d.name)
               })
 
-            d3.selectAll('path')
+            d3.selectAll('path.leaflet-interactive')
+              .data(this.ancestry_data.slice().reverse())
+              .join('path.leaflet-interactive')
                 .on('mouseover', function(e){
                         d3.selectAll('path')
                             .style('fill-opacity', optionsGeoJson.fillOpacityHover)
@@ -91,6 +93,27 @@ const MapComponent = Vue.component("map-view", {
                             .style('fill-opacity', optionsGeoJson.fillOpacity)
                             .style('stroke-opacity', optionsGeoJson.strokeOpacity)
                 })
+        },
+        selectRegion: function(e){
+            let name;
+            if(e.target.querySelector(".name-region")){
+                name = e.target.querySelector(".name-region").innerHTML
+            } else {
+                name = e.target.innerHTML
+            }
+            
+            d3.selectAll('path.leaflet-interactive')
+                .style('stroke-opacity', function(d){
+                    if(d.name != name) return optionsGeoJson.strokeOpacityHover
+                })
+                .style('fill-opacity', function(d){
+                    if(d.name != name) return optionsGeoJson.fillOpacityHover
+                })
+        },
+        clearRegion: function(e){
+            d3.selectAll('path.leaflet-interactive')
+            .style('fill-opacity', optionsGeoJson.fillOpacity)
+            .style('stroke-opacity', optionsGeoJson.strokeOpacity)
         },
         percent: function(number){
             return Math.ceil(100*number)+'%'

@@ -140,7 +140,7 @@
         {
             path: '/',
             name: 'Home',
-            component: home,
+            component: ProfilePage,
             
         },
         {
@@ -522,13 +522,13 @@
                 <div class="card h-100">
                     <div class="card-body card-body-scrollable card-body-scrollable-shadow">
                         <div class="divide-y">
-                            <div class="ancestry-list row" v-for="region in ancestry_data" v-on:click="">
+                            <div class="ancestry-list row" v-for="region in ancestry_data" v-on:mouseout="clearRegion" v-on:mouseover="selectRegion">
                                 <div class="col-10">
                                     <a href="#" class="badge" :style="{backgroundColor: region.color}"></a>
                                     <span style="color: #444" class="mx-1 strong">{{region.name}}</span>
                                 </div>
                                 <div class="col text-end">
-                                    <span class="strong text-azure">{{percent(region.prediction)}}</span>    
+                                    <span class="strong text-azure name-region" style="font-size: 0.9em">{{percent(region.prediction)}}</span>    
                                 </div>
                             </div>
                         </div>
@@ -557,14 +557,14 @@
                                 <div class="row">
                                     <div class="col-md-auto"> 
                                         <div class="row">
-                                            <span class="text-azure strong">Amostra:</span>
+                                            <span class="text-azure strong" v-if="!user.is_superuser">Amostra:</span>
                                         </div>
                                         <div class="row">
                                             <span class="text-azure strong">E-mail:</span>
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <div class="row">
+                                        <div class="row" v-if="!user.is_superuser">
                                             <span>{{user.sample}}</span>
                                         </div>
                                         <div class="row">
