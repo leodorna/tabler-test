@@ -31,13 +31,22 @@ const AdminPanel = Vue.component(
                 },
                 CREATE_USER: true,
                 EDIT_USER : false,
-                mode: null
+                mode: null,
+                timeout: null
             }
         },
         mounted: async function() {
             
             //form_object = new FormData(form)
             //this.formData =  Object.fromEntries(form_object.entries())
+            parent = this
+            document.querySelector('#pesquisa-nome').addEventListener('keyup', function (e) {
+                clearTimeout(parent.timeout);
+                
+                this.timeout = setTimeout( async function () {
+                    await parent.getUsers()
+                }, 1000);
+            });
             await this.getCategories()
             await this.getUsers()
         },
@@ -93,10 +102,11 @@ const AdminPanel = Vue.component(
 
             },
             getUsers: async function(){
-                const resp = await session.getRequest('users/?skip='+this.skip)
+                
+                const resp = await session.getRequest('users/?skip=0'+this.queryGet())
                 let users = await resp.json()
-    
-                this.users.push(...users.data)
+                this.pushUsers(users)
+                // this.users.push(...users.data)
                 
                 this.increaseCountUsers()
                 
@@ -114,6 +124,8 @@ const AdminPanel = Vue.component(
                     } else {
                         this.success = false
                     }
+                    console.log(await request.json())
+
                 } 
                 else if(this.mode === this.CREATE_USER){
                     const request = await session.postRequest('users/', this.formData)
@@ -126,9 +138,24 @@ const AdminPanel = Vue.component(
                     } else {
                         this.success = false    
                     }
+                    console.log(await request.json())
+
                 }
 
-                console.log(await request.json())
+            },
+            pushUsers: function(users){
+                
+                for(user of users.data){
+                    has_user = this.users.filter( d => {
+                        if(user.name == d.name) return true
+                    }).length
+                    if(has_user > 0) continue
+                    else this.users.push(user)
+                }
+            },
+            queryGet: function(){ 
+                if(this.query == '') return ''
+                else return '&name='+this.query   
             },
             findUsers: async function(query){
                 const request = await session.getRequest('users/?name='+query)
