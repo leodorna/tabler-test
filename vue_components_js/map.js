@@ -101,6 +101,8 @@ const MapComponent = Vue.component("map-view", {
             } else {
                 name = e.target.innerHTML
             }
+
+            console.log(name)
             
             d3.selectAll('path.leaflet-interactive')
                 .style('stroke-opacity', function(d){
