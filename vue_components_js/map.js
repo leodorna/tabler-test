@@ -40,7 +40,10 @@ const MapComponent = Vue.component("map-view", {
     methods: {
         createMap: function(){
             const map = L
-                .map('gencove')
+                .map('gencove', {
+                    'minZoom': 2,
+                    'maxBounds': [[84.67351256610522, -174.0234375], [-58.995311187950925, 223.2421875]]
+                })
                 .setView([14, 2], 3);   // center position + zoom
                 
                 // Add a tile to the map = a background. Comes from OpenStreetmap
@@ -48,6 +51,7 @@ const MapComponent = Vue.component("map-view", {
                 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
                 maxZoom: 6,
+                noWrap: true,
                 }).addTo(map);
             
             // Add a svg layer to the map
@@ -102,8 +106,6 @@ const MapComponent = Vue.component("map-view", {
                 name = e.target.innerHTML
             }
 
-            console.log(name)
-            
             d3.selectAll('path.leaflet-interactive')
                 .style('stroke-opacity', function(d){
                     if(d.name != name) return optionsGeoJson.strokeOpacityHover
