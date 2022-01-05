@@ -52,30 +52,7 @@ const AdminPanel = Vue.component(
         },
         methods: {
             createUser: function(){
-                // event.preventDefault();
-                // const data = new FormData(event.target);
-                
-                // //set true/false value to the superuser checkbox 
-                // if(data.get('is_superuser')){
-                //     data.set('is_superuser', false)
-                // } else {
-                //     data.set('is_superuser', true)
-                // }
-                
-                // const dataToSend = Object.fromEntries(data.entries());
-
-                // const response = await session.postRequest('users/', dataToSend)
-
-                // if(response.ok){
-                //     this.success = true
-                //     let data = await response.json()
-                //     this.users.push(data)
-                //     this.cleanForm()
-                // } else {
-                //     this.success = false
-                //     let data = await response.json()
-
-                // }
+            
                 this.success = null
                 this.mode = this.CREATE_USER
 
