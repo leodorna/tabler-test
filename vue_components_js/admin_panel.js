@@ -190,7 +190,7 @@ const AdminPanel = Vue.component(
                 this.skip += 100 // numero de usuarios pegos
             },
             filterUsers: function(){
-                let regexQuery = new RegExp('^'+this.query.toLowerCase())
+                let regexQuery = new RegExp(this.query.toLowerCase())
                 return this.users.filter( d => {
                     if(d.name){
                         return d.name.toLowerCase().match(regexQuery)
