@@ -79,7 +79,7 @@ const MapComponent = Vue.component("map-view", {
                                             }
                                         ).addTo(this.map);
 
-                polyline.bindTooltip(d.name)
+                polyline.bindTooltip(d.name+' - '+this.percent(d.prediction))
               })
 
             d3.selectAll('path.leaflet-interactive')
