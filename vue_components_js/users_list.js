@@ -91,7 +91,11 @@ const UsersList = Vue.component("users-list", {
             else return '&name='+this.query   
         },
         findUsers: async function(query){
-            const request = await session.getRequest('users/?name='+query)
+            if(this.searchType == 0){
+                const request = await session.getRequest('users/?name='+query)
+            } else {
+                const request = await session.getRequest('users/?sample='+query)
+            }
             let users = await request.json()
 
             return users
