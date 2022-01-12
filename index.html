@@ -108,6 +108,7 @@
 <!-- Vue Components -->
 
 <script src="vue_components_js/select_paises.js"></script>
+<script src="vue_components_js/form-user.js"></script>
 <script src="vue_components_js/navbar.js"></script>
 <script src="vue_components_js/tabela.js"></script>
 <script src="vue_components_js/donut.js"></script>
@@ -269,43 +270,150 @@
 <script type="text/x-template" id="users-list-template">
     <div class="col-10">
         <div class="row w-100">
-            <div class="input-icon mb-3"> 
-                <span class="input-icon-addon">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <circle cx="10" cy="10" r="7" />
-                        <line x1="21" y1="21" x2="15" y2="15" />
-                    </svg>
-                </span> 
-                <input id="pesquisa-usuario" class="form-control" type="text" v-model="query" placeholder="Pesquise o nome do usuário...">
-                
+            <div class="col-2">
+                <label class="form-label">Número de resultados:</label>
+                <select class="form-select" v-model="rowsNumber">
+                    <option value="10">10</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <div class="col-8">
+                <label class="form-label">Pesquisar:</label>
+                <div class="input-icon mb-3"> 
+                    <span class="input-icon-addon">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <circle cx="10" cy="10" r="7" />
+                            <line x1="21" y1="21" x2="15" y2="15" />
+                        </svg>
+                    </span> 
+                    <input id="pesquisa-usuario" class="form-control" type="text" v-model="query" :placeholder="placeholder()">
+                </div>
+            </div>
+            <div class="col-2">
+                <label class="form-label">Filtrar por:</label>
+                <select class="form-select" v-model="searchType">
+                    <option value="0">Nome</option>
+                    <option value="1">Amostra</option>
+                </select>
             </div>
         </div>
-        <div class="row row-deck row-cards w-100">
-            <div class="col-md-12 mb-3">
-                <div class="row row-deck row-cards">
-                    <div class="col-3" v-for="(user, i) in filterUsers()" v-if="user.sample" >
-                        <a class="card" v-on:click="getInfoUser(user)">
-                            <router-link :to="{path: '/users/' + user.id}">
-                                <div class="card-body">
-                                    <div class="col-12">
-                                        <h2 class="card-title">{{user.sample}}</h2>
-                                        <span class="card-subtitle">{{user.name}}</span><br/>
-                                        <span class="card-subtitle">{{user.email}}</span>
-                                        
-                                    </div>
-                                </div>
-                            </router-link>
-                            
+        <div class="row w-100">
+            <div class="col-12">
+                <div class="card">
+                        <div class="table-responsive">
+                            <table class="table table-vcenter table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Avatar</th>
+                                        <th>Amostra</th>
+                                        <th>Nome</th>
+                                        <th>E-mail</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(user, i) in filterUsers()" v-if="!user.is_superuser">
+                                        <td><span class="avatar avatar-sm bg-blue-lt" >{{get_initials(user.name)}}</span></td>
+                                        <td>{{ user.sample }}</td>
+                                        <td>{{ user.name }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>
+                                            <router-link :to="{path: '/users/' + user.id}">
+                                                <span>
+                                                    Visualizar
+                                                </span>
+                                            </router-link>
+                                        </td>
+                                        <td>
+                                            <a href="#" data-toggle="modal" data-target="#user-admin-modal" v-on:click="editUser(user)">
+                                                <span>
+                                                    Editar
+                                                </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>    
+                </div>
+            </div>
+        </div>
+
+        <div v-if="targetUser != null" class="modal modal-blur fade" id="user-admin-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body"> 
+                        <form-user></form-user>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-link link-secondary" data-dismiss="modal">
+                            Cancel
                         </a>
-                        
+                        <button class="btn btn-primary ms-auto" v-on:click="saveEdit">
+                            Salvar
+                        </button> 
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 justify-content-center">
-                <button class="btn" v-on:click="getUsers" v-if="!allUsersFetched">Carregar mais amostras</button>
+    </div>
+</script>
+
+<script type="text/x-template" id="form-user-template">
+    <div class="col-12" v-if="user != null">
+        <div class="section-profile row mb-3">
+            <div class="col-8">
+                 <div class="row">
+                     <div class="col-10">
+                        <h2>Dados de Contato</h2>
+                     </div>
+                 </div>
+                 <div class="row mb-3">
+                    <label class="form-label">E-mail:</label>
+                    <div> <input type="text" class="form-control" name="email" v-model="formData.email"> </div>
+                    
+                  </div>
+                 <div class="row mb-3">
+                    <label class="form-label">Telefone:</label>
+                    <div><input type="tel" class="form-control" pattern="\([0-9]{2}\) [0-9]{4,6}-[0-9]{3,4}$" name="phone" placeholder="(99)99999-9999"></div>
+                  </div>
+            </div>
+        </div>
+        <div class="section-profile row mb-3">
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-10">
+                        <h2>Dados Antropométricos</h2>
+                     </div>
+                </div>
+                <div class="row mb-3">
+                    <label class="form-label">Altura:</label>
+                    <div><input type="number" class="form-control" name="height" v-model="formData.height"></div>
+                </div>
+                <div class="row mb-3">
+                    <label class="form-label">Peso:</label>
+                    <div><input type="number" class="form-control" name="weight" v-model="formData.weight"></div>
+                </div>
+                <div class="row mb-3">
+                    <label class="form-label">Tamanho do Calçado:</label>
+                    <div><input type="number" class="form-control" name="shoe-size" v-model="formData.shoe_size"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3" v-if="success != null">
+            <div v-if="success === true" class="alert alert-success mb-0" role="alert">
+                <h4 class="alert-title">Feito!</h4>
+                <div class="text-muted">As alterações foram salvas com sucesso.</div>
+            </div>
+            <div v-if="success === false" class="alert alert-danger mb-0" role="alert">
+                <h4 class="alert-title">Opa&hellip;</h4>
+                <div class="text-muted">Erro no formulário.</div>
             </div>
         </div>
     </div>
@@ -742,9 +850,7 @@
 
         <div class="modal modal-blur fade" id="create-user-modal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
-
                 <div class="modal-content">
-
                     <div class="modal-header">
                         <h5 class="modal-title" v-if="mode === CREATE_USER">Criar Usuário</h5>
                         <h5 class="modal-title" v-if="mode === EDIT_USER">Editar Usuário</h5>
@@ -757,7 +863,6 @@
                                         <label class="form-label">Nome</label>
                                         <input type="text" v-model="formData.name" name="name" class="form-control" placeholder="Nome">
                                     </div>
-                    
                                     <div class="mb-3">
                                         <label class="form-label">Senha</label>
                                         <input type="password" v-model="formData.password" name="password" class="form-control" placeholder="Senha">
@@ -857,7 +962,6 @@
                                 <h4 class="alert-title">Opa&hellip;</h4>
                                 <div class="text-muted">Erro no formulário.</div>
                             </div>
-                        
                     </div>
                     <div class="modal-footer">
                         <a href="#" class="btn btn-link link-secondary" data-dismiss="modal">
@@ -865,8 +969,7 @@
                         </a>
                         <button class="btn btn-primary ms-auto" v-on:click="saveUser()">
                             Salvar
-                        </button>
-                        
+                        </button> 
                     </div>
                 </div>
             </div>

@@ -1,14 +1,19 @@
 const UsersList = Vue.component("users-list", {
     props: [],
     template: "#users-list-template",
-
+    components: {
+        'formUser': UserFormComponent
+    },
     data:  function(){
         return {
             users: [],
             query: '',
             skip: 0, // parametro pra por um offset no request de usuarios
             timeout: null,
-            allUsersFetched: false // parametro para esconder o botão de carregar novos usuários quando não encontra mais usuarios no banco
+            allUsersFetched: false, // parametro para esconder o botão de carregar novos usuários quando não encontra mais usuarios no banco
+            rowsNumber: 10,
+            searchType: 0,
+            targetUser: null
         }
     },
     mounted: async function(){
@@ -22,33 +27,34 @@ const UsersList = Vue.component("users-list", {
                 }, 1000);
         });
 
-
         await this.getUsers()
 
-        // const resp = await session.getRequest('users/')
-
-        // let users = await resp.json()
-        // this.users = users.data;
-
-        // this.increaseCountUsers() 
     },
     methods: {
         getInfoUser: async function(user){
             this.$root.targetUser = user
-            console.log(this.$root.targetUser)
+        },
+        get_initials: function(name){
+            const names_array = name.split(' ')
+            return String(names_array[0][0] + names_array[names_array.length-1][0]).toUpperCase()
         },
         filterUsers: function(){
             let regexQuery = new RegExp(this.query.toLowerCase())
-            console.log(this.query)
             return this.users.filter( d => {
-                if(d.name){
-                    return d.name.toLowerCase().match(regexQuery)
-                } 
-            }) 
+                if(this.searchType == 0){    
+                    if(d.name && !d.is_superuser){
+                        return d.name.toLowerCase().match(regexQuery)
+                    } 
+                }
+                else{
+                    if(d.sample && !d.is_superuser){
+                        return d.sample.toLowerCase().match(regexQuery)
+                    } 
+                }
+            }).slice(0, Number(this.rowsNumber))
         },
         getUsers: async function(){
             
-
             const resp = await session.getRequest('users/?skip=0'+this.queryGet())
 
             let users = await resp.json()
@@ -89,6 +95,34 @@ const UsersList = Vue.component("users-list", {
             let users = await request.json()
 
             return users
+        },
+        placeholder: function(){
+            if(this.searchType == 0){
+                return "Pesquise o nome do usuário..."
+            } else {
+                return "Pesquise o nome da amostra..."
+            }
+        },
+        editUser: function(user){
+            this.$root.targetUser = user
+            this.targetUser = user
+        },
+        saveEdit: async function(){
+            console.log(UserFormComponent.data)
+            const request = await session.patchRequest('users/update/'+this.user.id, this.formData)
+            let data = await request.json()
+
+            if(request.ok){
+                this.success = true
+            } else {
+                this.success = false
+            }
+
+            parent = this
+
+            setTimeout(function(){
+                parent.success = null
+            }, 6000)
         }
     }
 

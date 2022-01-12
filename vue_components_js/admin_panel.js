@@ -60,9 +60,6 @@ const AdminPanel = Vue.component(
 
             },
             editUser: function(user){
-                // let divForm = document.querySelector("#create-user-form")
-                
-                // divForm.reset()
                 this.success = null
                 this.mode = this.EDIT_USER
 
