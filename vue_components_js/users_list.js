@@ -112,14 +112,18 @@ const UsersList = Vue.component("users-list", {
             this.targetUser = user
         },
         saveEdit: async function(){
-            console.log(UserFormComponent.data)
-            const request = await session.patchRequest('users/update/'+this.user.id, this.formData)
+            let formData = this.$refs.formuser.formData;
+
+            const request = await session.patchRequest('users/update/'+this.$refs.formuser.user.id, formData);
+
             let data = await request.json()
 
             if(request.ok){
                 this.success = true
+                this.$refs.formuser.success = true
             } else {
                 this.success = false
+                this.$refs.formuser.success = false
             }
 
             parent = this

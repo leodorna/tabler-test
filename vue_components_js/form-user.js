@@ -29,6 +29,9 @@ let UserFormComponent = Vue.component( "form-user", {
             })
         },
         methods: {
+            teste: function(value){
+                console.log(value)
+            }
         }
 
     }
